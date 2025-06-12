@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ManifestMate Design System - Warm & Inspiring */
+/* Visio Design System - Warm & Inspiring */
 
 @layer base {
   :root {
@@ -46,7 +46,7 @@
     --sidebar-border: 39 30% 90%;
     --sidebar-ring: 15 100% 58%;
 
-    /* Custom ManifestMate Variables */
+    /* Custom Visio Variables */
     --gradient-primary: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
     --gradient-secondary: linear-gradient(135deg, #f7931e 0%, #ffd23f 100%);
     --gradient-accent: linear-gradient(135deg, #e74c3c 0%, #ff6b35 100%);

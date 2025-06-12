@@ -121,7 +121,7 @@ const Auth: React.FC = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
               <Sparkles size={32} style={{ color: '#ff6b35', marginRight: 12 }} />
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#333' }}>
-                ManifestMate
+                Visio
               </Typography>
             </Box>
             <Typography variant="body1" sx={{ color: '#666' }}>

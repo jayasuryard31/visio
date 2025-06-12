@@ -136,7 +136,7 @@ const QuoteSplash: React.FC<QuoteSplashProps> = ({ onComplete }) => {
                   fontSize: { xs: '2.5rem', md: '4rem' },
                 }}
               >
-                ManifestMate
+                Visio
               </Typography>
             </Box>
             <Typography
