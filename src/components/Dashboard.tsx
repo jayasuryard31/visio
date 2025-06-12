@@ -1,60 +1,171 @@
 
-import React, { useState } from 'react';
-import { Goal } from '../types';
-import { Plus, Target, Calendar, Lightbulb, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Goal, User } from '../types';
+import { Plus, Target, Calendar, Lightbulb, Sparkles, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { supabase } from '../integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, AppBar, Toolbar, IconButton } from '@mui/material';
 import GoalCard from './GoalCard';
 import AddGoalModal from './AddGoalModal';
 import DailyReminder from './DailyReminder';
 
 const Dashboard: React.FC = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [user, setUser] = useState<User | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const handleAddGoal = (goal: Omit<Goal, 'id' | 'createdAt' | 'userId'>) => {
-    const newGoal: Goal = {
-      ...goal,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      userId: 'demo-user' // In real app, this would come from auth
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/auth');
+        return;
+      }
+      setUser(session.user);
+      await fetchGoals();
+      setLoading(false);
     };
-    setGoals(prev => [...prev, newGoal]);
-    setIsAddModalOpen(false);
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigate('/auth');
+      } else {
+        setUser(session.user);
+        fetchGoals();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const fetchGoals = async () => {
+    const { data, error } = await supabase
+      .from('goals')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching goals:', error);
+    } else {
+      setGoals(data || []);
+    }
   };
 
-  const handleUpdateGoal = (goalId: string, updates: Partial<Goal>) => {
-    setGoals(prev => prev.map(goal => 
-      goal.id === goalId ? { ...goal, ...updates } : goal
-    ));
+  const handleAddGoal = async (goalData: Omit<Goal, 'id' | 'createdAt' | 'userId'>) => {
+    const { data, error } = await supabase
+      .from('goals')
+      .insert([{
+        ...goalData,
+        user_id: user?.id,
+        target_days: goalData.targetDays,
+        target_outcome: goalData.targetOutcome,
+        is_completed: goalData.isCompleted || false,
+      }])
+      .select();
+
+    if (error) {
+      console.error('Error adding goal:', error);
+    } else {
+      await fetchGoals();
+      setIsAddModalOpen(false);
+    }
   };
 
-  const handleDeleteGoal = (goalId: string) => {
-    setGoals(prev => prev.filter(goal => goal.id !== goalId));
+  const handleUpdateGoal = async (goalId: string, updates: Partial<Goal>) => {
+    const { error } = await supabase
+      .from('goals')
+      .update({
+        ...updates,
+        target_days: updates.targetDays,
+        target_outcome: updates.targetOutcome,
+        is_completed: updates.isCompleted,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', goalId);
+
+    if (error) {
+      console.error('Error updating goal:', error);
+    } else {
+      await fetchGoals();
+    }
   };
+
+  const handleDeleteGoal = async (goalId: string) => {
+    const { error } = await supabase
+      .from('goals')
+      .delete()
+      .eq('id', goalId);
+
+    if (error) {
+      console.error('Error deleting goal:', error);
+    } else {
+      await fetchGoals();
+    }
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)'
+      }}>
+        <Typography variant="h4" sx={{ color: 'white' }}>Loading...</Typography>
+      </Box>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50">
+    <Box sx={{ 
+      minHeight: '100vh', 
+      background: 'linear-gradient(135deg, #fff5f0 0%, #ffe0cc 50%, #ffd7b3 100%)' 
+    }}>
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-xl border-b border-purple-100 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Sparkles className="w-8 h-8 text-purple-600 mr-3" />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                ManifestMate
-              </h1>
-            </div>
-            <Button
-              onClick={() => setIsAddModalOpen(true)}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              New Goal
-            </Button>
-          </div>
-        </div>
-      </header>
+      <AppBar 
+        position="sticky" 
+        sx={{ 
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid rgba(255, 107, 53, 0.2)',
+          boxShadow: '0 2px 20px rgba(0,0,0,0.1)'
+        }}
+      >
+        <Toolbar>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <Sparkles size={32} style={{ color: '#ff6b35', marginRight: 12 }} />
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#ff6b35' }}>
+              ManifestMate
+            </Typography>
+          </Box>
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            className="mr-4"
+            style={{
+              background: 'linear-gradient(45deg, #ff6b35, #f7931e)',
+              color: 'white',
+              border: 'none'
+            }}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Goal
+          </Button>
+          <IconButton onClick={handleSignOut} sx={{ color: '#ff6b35' }}>
+            <LogOut />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Daily Reminder */}
@@ -62,35 +173,44 @@ const Dashboard: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <Card className="p-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-xl">
+          <Card className="p-6 border-0 shadow-xl" style={{ 
+            background: 'linear-gradient(135deg, #ff6b35, #e55a2b)',
+            color: 'white'
+          }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-purple-100 text-sm font-medium">Active Goals</p>
+                <p className="text-orange-100 text-sm font-medium">Active Goals</p>
                 <p className="text-3xl font-bold">{goals.filter(g => !g.isCompleted).length}</p>
               </div>
-              <Target className="w-8 h-8 text-purple-200" />
+              <Target className="w-8 h-8 text-orange-200" />
             </div>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-xl">
+          <Card className="p-6 border-0 shadow-xl" style={{ 
+            background: 'linear-gradient(135deg, #f7931e, #e8841a)',
+            color: 'white'
+          }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-100 text-sm font-medium">Completed</p>
+                <p className="text-yellow-100 text-sm font-medium">Completed</p>
                 <p className="text-3xl font-bold">{goals.filter(g => g.isCompleted).length}</p>
               </div>
-              <Lightbulb className="w-8 h-8 text-blue-200" />
+              <Lightbulb className="w-8 h-8 text-yellow-200" />
             </div>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-br from-cyan-500 to-cyan-600 text-white border-0 shadow-xl">
+          <Card className="p-6 border-0 shadow-xl" style={{ 
+            background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+            color: 'white'
+          }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-cyan-100 text-sm font-medium">Total Days</p>
+                <p className="text-red-100 text-sm font-medium">Total Days</p>
                 <p className="text-3xl font-bold">
-                  {goals.reduce((sum, goal) => sum + goal.targetDays, 0)}
+                  {goals.reduce((sum, goal) => sum + (goal.targetDays || 0), 0)}
                 </p>
               </div>
-              <Calendar className="w-8 h-8 text-cyan-200" />
+              <Calendar className="w-8 h-8 text-red-200" />
             </div>
           </Card>
         </div>
@@ -100,8 +220,8 @@ const Dashboard: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Manifestations</h2>
           
           {goals.length === 0 ? (
-            <Card className="p-12 text-center bg-white/50 backdrop-blur-sm border-dashed border-2 border-purple-200">
-              <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4" />
+            <Card className="p-12 text-center bg-white/70 backdrop-blur-sm border-dashed border-2 border-orange-300">
+              <Sparkles className="w-16 h-16 text-orange-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-700 mb-2">
                 Start Your Journey
               </h3>
@@ -110,7 +230,11 @@ const Dashboard: React.FC = () => {
               </p>
               <Button
                 onClick={() => setIsAddModalOpen(true)}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                style={{
+                  background: 'linear-gradient(45deg, #ff6b35, #f7931e)',
+                  color: 'white',
+                  border: 'none'
+                }}
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Create Your First Goal
@@ -137,7 +261,7 @@ const Dashboard: React.FC = () => {
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddGoal}
       />
-    </div>
+    </Box>
   );
 };
 
