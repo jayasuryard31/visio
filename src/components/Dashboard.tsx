@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Goal, User } from '../types';
+import { Goal } from '../types';
+import { User } from '@supabase/supabase-js';
 import { Plus, Target, Calendar, Lightbulb, Sparkles, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -53,7 +54,19 @@ const Dashboard: React.FC = () => {
     if (error) {
       console.error('Error fetching goals:', error);
     } else {
-      setGoals(data || []);
+      // Map database fields to our Goal interface
+      const mappedGoals: Goal[] = (data || []).map(goal => ({
+        id: goal.id,
+        title: goal.title,
+        description: goal.description || '',
+        targetDays: goal.target_days,
+        targetOutcome: goal.target_outcome || '',
+        createdAt: goal.created_at,
+        userId: goal.user_id,
+        notes: goal.notes || undefined,
+        isCompleted: goal.is_completed || false,
+      }));
+      setGoals(mappedGoals);
     }
   };
 
@@ -61,10 +74,12 @@ const Dashboard: React.FC = () => {
     const { data, error } = await supabase
       .from('goals')
       .insert([{
-        ...goalData,
+        title: goalData.title,
+        description: goalData.description,
         user_id: user?.id,
         target_days: goalData.targetDays,
         target_outcome: goalData.targetOutcome,
+        notes: goalData.notes,
         is_completed: goalData.isCompleted || false,
       }])
       .select();
@@ -81,9 +96,11 @@ const Dashboard: React.FC = () => {
     const { error } = await supabase
       .from('goals')
       .update({
-        ...updates,
+        title: updates.title,
+        description: updates.description,
         target_days: updates.targetDays,
         target_outcome: updates.targetOutcome,
+        notes: updates.notes,
         is_completed: updates.isCompleted,
         updated_at: new Date().toISOString(),
       })

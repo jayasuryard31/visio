@@ -16,8 +16,5 @@ export interface Goal {
   isCompleted?: boolean;
 }
 
-export interface User {
-  id: string;
-  email: string;
-  name?: string;
-}
+// Use Supabase User type instead of custom one
+export type { User } from '@supabase/supabase-js';
