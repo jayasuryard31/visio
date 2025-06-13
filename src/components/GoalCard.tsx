@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Goal } from '../types';
 import { Calendar, Target, MoreVertical, Edit, Trash2, CheckCircle, Circle } from 'lucide-react';
@@ -16,9 +15,10 @@ interface GoalCardProps {
   goal: Goal;
   onUpdate: (goalId: string, updates: Partial<Goal>) => void;
   onDelete: (goalId: string) => void;
+  onEdit: (goal: Goal) => void;
 }
 
-const GoalCard: React.FC<GoalCardProps> = ({ goal, onUpdate, onDelete }) => {
+const GoalCard: React.FC<GoalCardProps> = ({ goal, onUpdate, onDelete, onEdit }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const daysElapsed = Math.floor(
@@ -86,7 +86,7 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onUpdate, onDelete }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-white border border-gray-200">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEdit(goal)}>
               <Edit className="w-4 h-4 mr-2" />
               Edit
             </DropdownMenuItem>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types';
 import { User } from '@supabase/supabase-js';
@@ -10,12 +9,15 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, AppBar, Toolbar, IconButton } from '@mui/material';
 import GoalCard from './GoalCard';
 import AddGoalModal from './AddGoalModal';
+import EditGoalModal from './EditGoalModal';
 import DailyReminder from './DailyReminder';
 
 const Dashboard: React.FC = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -124,6 +126,11 @@ const Dashboard: React.FC = () => {
     } else {
       await fetchGoals();
     }
+  };
+
+  const handleEditGoal = (goal: Goal) => {
+    setEditingGoal(goal);
+    setIsEditModalOpen(true);
   };
 
   const handleSignOut = async () => {
@@ -265,6 +272,7 @@ const Dashboard: React.FC = () => {
                   goal={goal}
                   onUpdate={handleUpdateGoal}
                   onDelete={handleDeleteGoal}
+                  onEdit={handleEditGoal}
                 />
               ))}
             </div>
@@ -277,6 +285,17 @@ const Dashboard: React.FC = () => {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddGoal}
+      />
+
+      {/* Edit Goal Modal */}
+      <EditGoalModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingGoal(null);
+        }}
+        onUpdate={handleUpdateGoal}
+        goal={editingGoal}
       />
     </Box>
   );
