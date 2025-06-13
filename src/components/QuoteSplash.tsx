@@ -19,7 +19,15 @@ const QuoteSplash: React.FC<QuoteSplashProps> = ({ onComplete }) => {
   useEffect(() => {
     const loadQuote = async () => {
       try {
+        console.log('QuoteSplash: Starting to load quote...');
+        setIsLoading(true);
+        
+        // Add a small delay to ensure splash is visible before fetching
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
         const fetchedQuote = await fetchRandomQuote();
+        console.log('QuoteSplash: Quote loaded successfully:', fetchedQuote);
+        
         setQuote(fetchedQuote);
         setIsLoading(false);
         
@@ -27,16 +35,22 @@ const QuoteSplash: React.FC<QuoteSplashProps> = ({ onComplete }) => {
         setTimeout(() => setShowQuote(true), 500);
         setTimeout(() => setShowAuthor(true), 1500);
         
-        // Calculate timeout based on quote length (3-5 seconds)
+        // Calculate timeout based on quote length (4-7 seconds)
         const quoteLength = fetchedQuote.content.length;
-        const timeoutDuration = Math.min(Math.max(3000, quoteLength * 50), 5000);
+        const readingTime = Math.min(Math.max(4000, quoteLength * 60), 7000);
+        
+        console.log(`QuoteSplash: Quote will be shown for ${readingTime}ms`);
         
         setTimeout(() => {
+          console.log('QuoteSplash: Starting fade out...');
           setIsVisible(false);
-          setTimeout(onComplete, 500);
-        }, timeoutDuration + 2000);
+          setTimeout(() => {
+            console.log('QuoteSplash: Calling onComplete...');
+            onComplete();
+          }, 500);
+        }, readingTime + 2000);
       } catch (error) {
-        console.error('Failed to load quote:', error);
+        console.error('QuoteSplash: Failed to load quote:', error);
         setIsLoading(false);
         setTimeout(() => {
           setIsVisible(false);
