@@ -62,6 +62,26 @@ const fallbackQuotes: Quote[] = [
   {
     content: "Don't wait for opportunity. Create it.",
     author: "Unknown"
+  },
+  {
+    content: "The way to get started is to quit talking and begin doing.",
+    author: "Walt Disney"
+  },
+  {
+    content: "Life is what happens to you while you're busy making other plans.",
+    author: "John Lennon"
+  },
+  {
+    content: "The future belongs to those who believe in the beauty of their dreams.",
+    author: "Eleanor Roosevelt"
+  },
+  {
+    content: "It is during our darkest moments that we must focus to see the light.",
+    author: "Aristotle"
+  },
+  {
+    content: "The only impossible journey is the one you never begin.",
+    author: "Tony Robbins"
   }
 ];
 
@@ -84,7 +104,40 @@ const fetchFromQuotable = async (): Promise<Quote> => {
   };
 };
 
-// Function to fetch from ZenQuotes API
+// Function to fetch from QuoteGarden API
+const fetchFromQuoteGarden = async (): Promise<Quote> => {
+  const response = await fetch('https://quote-garden.herokuapp.com/api/v3/quotes/random');
+  if (!response.ok) {
+    throw new Error('QuoteGarden API failed');
+  }
+  const data = await response.json();
+  return {
+    content: data.data.quoteText.replace(/[""]/g, ''),
+    author: data.data.quoteAuthor
+  };
+};
+
+// Function to fetch from API Ninjas
+const fetchFromApiNinjas = async (): Promise<Quote> => {
+  const response = await fetch('https://api.api-ninjas.com/v1/quotes?category=inspirational', {
+    headers: {
+      'X-Api-Key': 'demo' // Using demo key for free tier
+    }
+  });
+  if (!response.ok) {
+    throw new Error('API Ninjas failed');
+  }
+  const data = await response.json();
+  if (data && data.length > 0) {
+    return {
+      content: data[0].quote,
+      author: data[0].author
+    };
+  }
+  throw new Error('No quote data from API Ninjas');
+};
+
+// Function to fetch from Zen Quotes (Alternative endpoint)
 const fetchFromZenQuotes = async (): Promise<Quote> => {
   const response = await fetch('https://zenquotes.io/api/random');
   if (!response.ok) {
@@ -92,7 +145,7 @@ const fetchFromZenQuotes = async (): Promise<Quote> => {
   }
   const data = await response.json();
   return {
-    content: data[0].q,
+    content: data[0].q.replace(/[""]/g, ''),
     author: data[0].a
   };
 };
@@ -113,17 +166,33 @@ const fetchInspirationalQuote = async (): Promise<Quote> => {
   };
 };
 
+// Function to fetch from DummyJSON (Free and reliable)
+const fetchFromDummyJSON = async (): Promise<Quote> => {
+  const response = await fetch('https://dummyjson.com/quotes/random');
+  if (!response.ok) {
+    throw new Error('DummyJSON API failed');
+  }
+  const data = await response.json();
+  return {
+    content: data.quote,
+    author: data.author
+  };
+};
+
 export const fetchRandomQuote = async (): Promise<Quote> => {
   console.log('Fetching random quote...');
   
-  // Array of different quote fetching strategies
+  // Array of different quote fetching strategies (prioritized by reliability)
   const quoteFetchers = [
-    fetchFromQuotable,
-    fetchInspirationalQuote,
-    fetchFromZenQuotes
+    fetchFromDummyJSON,        // Most reliable
+    fetchFromQuotable,         // Primary choice
+    fetchFromQuoteGarden,      // Good backup
+    fetchInspirationalQuote,   // Quotable with categories
+    fetchFromZenQuotes,        // Alternative source
+    fetchFromApiNinjas         // Additional source
   ];
   
-  // Randomize the order of API calls
+  // Randomize the order of API calls to get variety
   const shuffledFetchers = quoteFetchers.sort(() => Math.random() - 0.5);
   
   // Try each API in random order
@@ -132,7 +201,14 @@ export const fetchRandomQuote = async (): Promise<Quote> => {
       console.log(`Trying quote fetcher: ${fetcher.name}`);
       const quote = await fetcher();
       console.log('Successfully fetched quote:', quote);
-      return quote;
+      
+      // Validate the quote has content and author
+      if (quote.content && quote.author) {
+        return quote;
+      } else {
+        console.warn(`Invalid quote data from ${fetcher.name}:`, quote);
+        continue;
+      }
     } catch (error) {
       console.warn(`Quote fetcher ${fetcher.name} failed:`, error);
       continue;
