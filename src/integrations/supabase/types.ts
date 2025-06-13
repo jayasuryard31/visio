@@ -9,13 +9,127 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      goals: {
+      daily_checkins: {
+        Row: {
+          check_in_date: string
+          created_at: string
+          daily_reflection: string | null
+          energy_level: number | null
+          goals_worked_on: string[] | null
+          gratitude_note: string | null
+          id: string
+          mood_rating: number | null
+          user_id: string
+        }
+        Insert: {
+          check_in_date?: string
+          created_at?: string
+          daily_reflection?: string | null
+          energy_level?: number | null
+          goals_worked_on?: string[] | null
+          gratitude_note?: string | null
+          id?: string
+          mood_rating?: number | null
+          user_id: string
+        }
+        Update: {
+          check_in_date?: string
+          created_at?: string
+          daily_reflection?: string | null
+          energy_level?: number | null
+          goals_worked_on?: string[] | null
+          gratitude_note?: string | null
+          id?: string
+          mood_rating?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      favorite_quotes: {
         Row: {
           created_at: string
+          id: string
+          quote_author: string
+          quote_content: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          quote_author: string
+          quote_content: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          quote_author?: string
+          quote_content?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      goal_milestones: {
+        Row: {
+          completed_at: string | null
+          created_at: string
           description: string | null
+          goal_id: string
+          id: string
+          is_completed: boolean | null
+          target_date: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          goal_id: string
+          id?: string
+          is_completed?: boolean | null
+          target_date?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          goal_id?: string
+          id?: string
+          is_completed?: boolean | null
+          target_date?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_milestones_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      goals: {
+        Row: {
+          category: string | null
+          color_theme: string | null
+          created_at: string
+          description: string | null
+          estimated_completion_date: string | null
           id: string
           is_completed: boolean
+          last_activity_date: string | null
           notes: string | null
+          priority: string | null
+          progress_percentage: number | null
+          reminder_enabled: boolean | null
+          reminder_time: string | null
+          streak_count: number | null
+          tags: string[] | null
           target_days: number
           target_outcome: string | null
           title: string
@@ -23,11 +137,21 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          category?: string | null
+          color_theme?: string | null
           created_at?: string
           description?: string | null
+          estimated_completion_date?: string | null
           id?: string
           is_completed?: boolean
+          last_activity_date?: string | null
           notes?: string | null
+          priority?: string | null
+          progress_percentage?: number | null
+          reminder_enabled?: boolean | null
+          reminder_time?: string | null
+          streak_count?: number | null
+          tags?: string[] | null
           target_days?: number
           target_outcome?: string | null
           title: string
@@ -35,11 +159,21 @@ export type Database = {
           user_id: string
         }
         Update: {
+          category?: string | null
+          color_theme?: string | null
           created_at?: string
           description?: string | null
+          estimated_completion_date?: string | null
           id?: string
           is_completed?: boolean
+          last_activity_date?: string | null
           notes?: string | null
+          priority?: string | null
+          progress_percentage?: number | null
+          reminder_enabled?: boolean | null
+          reminder_time?: string | null
+          streak_count?: number | null
+          tags?: string[] | null
           target_days?: number
           target_outcome?: string | null
           title?: string
