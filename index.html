@@ -8,23 +8,107 @@
     <meta name="description" content="Set goals, track progress, and manifest your dreams with daily motivation" />
     <meta name="author" content="Visio" />
 
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#ff6b35" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Visio" />
+    <meta name="application-name" content="Visio" />
+    <meta name="msapplication-TileColor" content="#ff6b35" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+
+    <!-- PWA Icons -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/visio.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/visio.png" />
+    <link rel="apple-touch-icon" href="/visio.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/visio.png" />
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- SEO Meta Tags -->
     <meta property="og:title" content="Visio - Transform Your Dreams Into Reality" />
     <meta property="og:description" content="Set goals, track progress, and manifest your dreams with daily motivation" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="./visio.png" />
+    <meta property="og:url" content="https://19be7a81-a858-4340-8526-cfb2ecf43c8a.lovableproject.com" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@jayasurya_rd31" />
     <meta name="twitter:image" content="./visio.png" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://19be7a81-a858-4340-8526-cfb2ecf43c8a.lovableproject.com" />
+
+    <!-- Sitemap -->
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+
+    <!-- PWA Install Prompt -->
+    <script>
+      let deferredPrompt;
+      
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later
+        deferredPrompt = e;
+        
+        // Create install button (you can customize this)
+        const installButton = document.createElement('button');
+        installButton.textContent = 'Install App';
+        installButton.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: #ff6b35;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-family: Inter, sans-serif;
+          font-weight: 600;
+          cursor: pointer;
+          z-index: 1000;
+          box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        `;
+        
+        installButton.addEventListener('click', () => {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+            installButton.remove();
+          });
+        });
+        
+        document.body.appendChild(installButton);
+      });
+    </script>
   </body>
 </html>
