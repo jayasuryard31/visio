@@ -42,24 +42,25 @@ const NotificationSettings: React.FC = () => {
   const fetchNotificationPreferences = async () => {
     try {
       const { data, error } = await supabase
-        .from('notification_preferences' as any)
+        .from('notification_preferences')
         .select('*')
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching notification preferences:', error);
       } else if (data) {
+        const prefData = data as any;
         setPreferences({
-          id: data.id,
-          userId: data.user_id,
-          goalReminders: data.goal_reminders,
-          dailyCheckinReminders: data.daily_checkin_reminders,
-          focusSessionReminders: data.focus_session_reminders,
-          streakNotifications: data.streak_notifications,
-          milestoneNotifications: data.milestone_notifications,
-          reminderTime: data.reminder_time,
-          createdAt: data.created_at,
-          updatedAt: data.updated_at,
+          id: prefData.id,
+          userId: prefData.user_id,
+          goalReminders: prefData.goal_reminders,
+          dailyCheckinReminders: prefData.daily_checkin_reminders,
+          focusSessionReminders: prefData.focus_session_reminders,
+          streakNotifications: prefData.streak_notifications,
+          milestoneNotifications: prefData.milestone_notifications,
+          reminderTime: prefData.reminder_time,
+          createdAt: prefData.created_at,
+          updatedAt: prefData.updated_at,
         });
       }
     } catch (error) {
@@ -109,7 +110,7 @@ const NotificationSettings: React.FC = () => {
 
       if (preferences) {
         const { error } = await supabase
-          .from('notification_preferences' as any)
+          .from('notification_preferences')
           .update(updatedPrefs)
           .eq('id', preferences.id);
 
@@ -122,7 +123,7 @@ const NotificationSettings: React.FC = () => {
         }
       } else {
         const { error } = await supabase
-          .from('notification_preferences' as any)
+          .from('notification_preferences')
           .insert([updatedPrefs]);
 
         if (error) {

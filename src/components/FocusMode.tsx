@@ -53,7 +53,7 @@ const FocusMode: React.FC = () => {
     try {
       const today = new Date().toISOString().split('T')[0];
       const { data, error } = await supabase
-        .from('focus_sessions' as any)
+        .from('focus_sessions')
         .select('*')
         .eq('status', 'completed')
         .gte('created_at', today)
@@ -75,7 +75,7 @@ const FocusMode: React.FC = () => {
     if (currentSession) {
       try {
         const { error } = await supabase
-          .from('focus_sessions' as any)
+          .from('focus_sessions')
           .update({
             status: 'completed',
             completed_duration: currentSession.duration,
@@ -115,7 +115,7 @@ const FocusMode: React.FC = () => {
 
       const duration = timeLeft;
       const { data, error } = await supabase
-        .from('focus_sessions' as any)
+        .from('focus_sessions')
         .insert([{
           user_id: user.id,
           duration: duration,
@@ -131,15 +131,16 @@ const FocusMode: React.FC = () => {
         console.error('Error creating session:', error);
         toast.error('Failed to start session');
       } else if (data) {
+        const sessionData = data as any;
         setCurrentSession({
-          id: data.id,
-          userId: data.user_id,
-          duration: data.duration,
-          completedDuration: data.completed_duration || 0,
-          sessionType: data.session_type,
-          status: data.status,
-          startedAt: data.started_at,
-          createdAt: data.created_at,
+          id: sessionData.id,
+          userId: sessionData.user_id,
+          duration: sessionData.duration,
+          completedDuration: sessionData.completed_duration || 0,
+          sessionType: sessionData.session_type,
+          status: sessionData.status,
+          startedAt: sessionData.started_at,
+          createdAt: sessionData.created_at,
         });
         setIsActive(true);
         toast.success('Focus session started!');
