@@ -9,6 +9,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Goals from "./pages/Goals";
+import Analytics from "./pages/Analytics";
+import Wellness from "./pages/Wellness";
+import Journal from "./pages/Journal";
+import Schedule from "./pages/Schedule";
+import FocusMode from "./pages/FocusMode";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +44,13 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/wellness" element={<Wellness />} />
+            <Route path="/journal" element={<Journal />} />
+            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/focus" element={<FocusMode />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

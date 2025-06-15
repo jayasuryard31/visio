@@ -1,26 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types';
 import { User } from '@supabase/supabase-js';
-import { Plus, Target, Calendar, Lightbulb, Sparkles, LogOut, BarChart3, Settings } from 'lucide-react';
+import { Plus, Target, Calendar, Lightbulb, Sparkles, BarChart3, Heart, BookOpen, Focus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '../integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, AppBar, Toolbar, IconButton } from '@mui/material';
 import GoalCard from './GoalCard';
 import AddGoalModal from './AddGoalModal';
 import EditGoalModal from './EditGoalModal';
 import DailyReminder from './DailyReminder';
-import MoodTracker from './MoodTracker';
-import ProgressAnalytics from './ProgressAnalytics';
-import QuickActions from './QuickActions';
-import StreakTracker from './StreakTracker';
-import Journal from './Journal';
-import Schedule from './Schedule';
-import FocusMode from './FocusMode';
-import NotificationSettings from './NotificationSettings';
+import MobileLayout from './MobileLayout';
 
 const Dashboard: React.FC = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -29,7 +19,6 @@ const Dashboard: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -170,243 +159,183 @@ const Dashboard: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-  };
+  const quickActions = [
+    {
+      icon: Target,
+      label: 'Goals',
+      color: 'from-orange-400 to-red-400',
+      path: '/goals'
+    },
+    {
+      icon: Heart,
+      label: 'Wellness',
+      color: 'from-pink-400 to-purple-400',
+      path: '/wellness'
+    },
+    {
+      icon: BarChart3,
+      label: 'Analytics',
+      color: 'from-blue-400 to-indigo-400',
+      path: '/analytics'
+    },
+    {
+      icon: BookOpen,
+      label: 'Journal',
+      color: 'from-green-400 to-teal-400',
+      path: '/journal'
+    },
+    {
+      icon: Calendar,
+      label: 'Schedule',
+      color: 'from-yellow-400 to-orange-400',
+      path: '/schedule'
+    },
+    {
+      icon: Focus,
+      label: 'Focus Mode',
+      color: 'from-purple-400 to-pink-400',
+      path: '/focus'
+    }
+  ];
 
   if (loading) {
     return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)'
-      }}>
-        <Typography variant="h4" sx={{ color: 'white' }}>Loading...</Typography>
-      </Box>
+      <MobileLayout>
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading your journey...</p>
+          </div>
+        </div>
+      </MobileLayout>
     );
   }
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #fff5f0 0%, #ffe0cc 50%, #ffd7b3 100%)' 
-    }}>
-      {/* Header */}
-      <AppBar 
-        position="sticky" 
-        sx={{ 
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          borderBottom: '1px solid rgba(255, 107, 53, 0.2)',
-          boxShadow: '0 2px 20px rgba(0,0,0,0.1)'
-        }}
-      >
-        <Toolbar>
-          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <Sparkles size={32} style={{ color: '#ff6b35', marginRight: 12 }} />
-            <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#ff6b35' }}>
-              Visio
-            </Typography>
-          </Box>
-          <Button
-            onClick={() => setIsAddModalOpen(true)}
-            className="mr-4"
-            style={{
-              background: 'linear-gradient(45deg, #ff6b35, #f7931e)',
-              color: 'white',
-              border: 'none'
-            }}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New Goal
-          </Button>
-          <IconButton onClick={handleSignOut} sx={{ color: '#ff6b35' }}>
-            <LogOut />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+    <MobileLayout showAddGoal onAddGoal={() => setIsAddModalOpen(true)}>
+      <div className="space-y-6">
+        {/* Welcome Section */}
+        <div className="text-center py-8">
+          <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+            <Sparkles className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to Visio</h1>
+          <p className="text-gray-600">Manifest your dreams into reality</p>
+        </div>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 mb-6">
-            <TabsTrigger value="overview" className="text-xs md:text-sm">Overview</TabsTrigger>
-            <TabsTrigger value="goals" className="text-xs md:text-sm">Goals</TabsTrigger>
-            <TabsTrigger value="analytics" className="text-xs md:text-sm">Analytics</TabsTrigger>
-            <TabsTrigger value="wellness" className="text-xs md:text-sm">Wellness</TabsTrigger>
-            <TabsTrigger value="productivity" className="text-xs md:text-sm">Productivity</TabsTrigger>
-            <TabsTrigger value="settings" className="text-xs md:text-sm">Settings</TabsTrigger>
-          </TabsList>
+        {/* Daily Reminder */}
+        <DailyReminder />
 
-          <TabsContent value="overview" className="space-y-8">
-            {/* Daily Reminder */}
-            <DailyReminder />
-
-            {/* Quick Actions */}
-            <QuickActions
-              onAddGoal={() => setIsAddModalOpen(true)}
-              onShowAnalytics={() => setActiveTab('analytics')}
-              onShowMoodTracker={() => setActiveTab('wellness')}
-              onShowJournal={() => setActiveTab('productivity')}
-              onShowSchedule={() => setActiveTab('productivity')}
-              onShowFocusMode={() => setActiveTab('productivity')}
-            />
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-              <Card className="p-6 border-0 shadow-xl" style={{ 
-                background: 'linear-gradient(135deg, #ff6b35, #e55a2b)',
-                color: 'white'
-              }}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-orange-100 text-sm font-medium">Active Goals</p>
-                    <p className="text-3xl font-bold">{goals.filter(g => !g.isCompleted).length}</p>
-                  </div>
-                  <Target className="w-8 h-8 text-orange-200" />
-                </div>
-              </Card>
-
-              <Card className="p-6 border-0 shadow-xl" style={{ 
-                background: 'linear-gradient(135deg, #f7931e, #e8841a)',
-                color: 'white'
-              }}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-yellow-100 text-sm font-medium">Completed</p>
-                    <p className="text-3xl font-bold">{goals.filter(g => g.isCompleted).length}</p>
-                  </div>
-                  <Lightbulb className="w-8 h-8 text-yellow-200" />
-                </div>
-              </Card>
-
-              <Card className="p-6 border-0 shadow-xl" style={{ 
-                background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
-                color: 'white'
-              }}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-red-100 text-sm font-medium">Total Days</p>
-                    <p className="text-3xl font-bold">
-                      {goals.reduce((sum, goal) => sum + (goal.targetDays || 0), 0)}
-                    </p>
-                  </div>
-                  <Calendar className="w-8 h-8 text-red-200" />
-                </div>
-              </Card>
-
-              <Card className="p-6 border-0 shadow-xl" style={{ 
-                background: 'linear-gradient(135deg, #9b59b6, #8e44ad)',
-                color: 'white'
-              }}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-purple-100 text-sm font-medium">Avg Progress</p>
-                    <p className="text-3xl font-bold">
-                      {goals.length > 0 ? Math.round(goals.reduce((sum, goal) => sum + (goal.progressPercentage || 0), 0) / goals.length) : 0}%
-                    </p>
-                  </div>
-                  <BarChart3 className="w-8 h-8 text-purple-200" />
-                </div>
-              </Card>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="p-4 bg-gradient-to-br from-orange-400 to-red-400 text-white border-0 shadow-xl">
+            <div className="text-center">
+              <Target className="w-8 h-8 mx-auto mb-2 opacity-80" />
+              <div className="text-2xl font-bold">{goals.filter(g => !g.isCompleted).length}</div>
+              <div className="text-xs opacity-80">Active Goals</div>
             </div>
+          </Card>
 
-            {/* Streak Tracker */}
-            <StreakTracker />
+          <Card className="p-4 bg-gradient-to-br from-green-400 to-emerald-400 text-white border-0 shadow-xl">
+            <div className="text-center">
+              <Lightbulb className="w-8 h-8 mx-auto mb-2 opacity-80" />
+              <div className="text-2xl font-bold">{goals.filter(g => g.isCompleted).length}</div>
+              <div className="text-xs opacity-80">Completed</div>
+            </div>
+          </Card>
 
-            {/* Recent Goals Preview */}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Goals</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {goals.slice(0, 6).map((goal) => (
-                  <GoalCard
-                    key={goal.id}
-                    goal={goal}
-                    onUpdate={handleUpdateGoal}
-                    onDelete={handleDeleteGoal}
-                    onEdit={handleEditGoal}
-                  />
-                ))}
+          <Card className="p-4 bg-gradient-to-br from-blue-400 to-indigo-400 text-white border-0 shadow-xl">
+            <div className="text-center">
+              <Calendar className="w-8 h-8 mx-auto mb-2 opacity-80" />
+              <div className="text-2xl font-bold">
+                {goals.reduce((sum, goal) => sum + (goal.targetDays || 0), 0)}
               </div>
+              <div className="text-xs opacity-80">Total Days</div>
             </div>
-          </TabsContent>
+          </Card>
 
-          <TabsContent value="goals" className="space-y-8">
-            {/* Goals Section */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Manifestations</h2>
-              
-              {goals.length === 0 ? (
-                <Card className="p-12 text-center bg-white/70 backdrop-blur-sm border-dashed border-2 border-orange-300">
-                  <Sparkles className="w-16 h-16 text-orange-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                    Start Your Journey
-                  </h3>
-                  <p className="text-gray-500 mb-6">
-                    Create your first goal and begin manifesting your dreams into reality.
-                  </p>
-                  <Button
-                    onClick={() => setIsAddModalOpen(true)}
-                    style={{
-                      background: 'linear-gradient(45deg, #ff6b35, #f7931e)',
-                      color: 'white',
-                      border: 'none'
-                    }}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Your First Goal
-                  </Button>
-                </Card>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {goals.map((goal) => (
-                    <GoalCard
-                      key={goal.id}
-                      goal={goal}
-                      onUpdate={handleUpdateGoal}
-                      onDelete={handleDeleteGoal}
-                      onEdit={handleEditGoal}
-                    />
-                  ))}
-                </div>
-              )}
+          <Card className="p-4 bg-gradient-to-br from-purple-400 to-pink-400 text-white border-0 shadow-xl">
+            <div className="text-center">
+              <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-80" />
+              <div className="text-2xl font-bold">
+                {goals.length > 0 ? Math.round(goals.reduce((sum, goal) => sum + (goal.progressPercentage || 0), 0) / goals.length) : 0}%
+              </div>
+              <div className="text-xs opacity-80">Avg Progress</div>
             </div>
-          </TabsContent>
+          </Card>
+        </div>
 
-          <TabsContent value="analytics">
-            <ProgressAnalytics />
-          </TabsContent>
+        {/* Quick Actions */}
+        <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-xl">
+          <h3 className="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {quickActions.map((action, index) => (
+              <button
+                key={index}
+                onClick={() => navigate(action.path)}
+                className={`p-4 rounded-xl bg-gradient-to-br ${action.color} text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex flex-col items-center space-y-2`}
+              >
+                <action.icon className="w-6 h-6" />
+                <span className="text-sm font-medium">{action.label}</span>
+              </button>
+            ))}
+          </div>
+        </Card>
 
-          <TabsContent value="wellness">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <MoodTracker />
-              <StreakTracker />
+        {/* Recent Goals */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-800">Recent Goals</h2>
+            <Button
+              onClick={() => navigate('/goals')}
+              variant="outline"
+              size="sm"
+              className="text-orange-600 border-orange-300 hover:bg-orange-50"
+            >
+              View All
+            </Button>
+          </div>
+          
+          {goals.length === 0 ? (
+            <Card className="p-8 text-center bg-white/80 backdrop-blur-sm border-dashed border-2 border-orange-300">
+              <Sparkles className="w-12 h-12 text-orange-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                Start Your Journey
+              </h3>
+              <p className="text-gray-500 mb-4">
+                Create your first goal and begin manifesting your dreams into reality.
+              </p>
+              <Button
+                onClick={() => setIsAddModalOpen(true)}
+                className="bg-gradient-to-r from-orange-400 to-red-400 text-white border-0"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Your First Goal
+              </Button>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {goals.slice(0, 4).map((goal) => (
+                <GoalCard
+                  key={goal.id}
+                  goal={goal}
+                  onUpdate={handleUpdateGoal}
+                  onDelete={handleDeleteGoal}
+                  onEdit={handleEditGoal}
+                />
+              ))}
             </div>
-          </TabsContent>
+          )}
+        </div>
+      </div>
 
-          <TabsContent value="productivity" className="space-y-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <Journal />
-              <Schedule />
-            </div>
-            <FocusMode />
-          </TabsContent>
-
-          <TabsContent value="settings">
-            <NotificationSettings />
-          </TabsContent>
-        </Tabs>
-      </main>
-
-      {/* Add Goal Modal */}
+      {/* Modals */}
       <AddGoalModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddGoal}
       />
 
-      {/* Edit Goal Modal */}
       <EditGoalModal
         isOpen={isEditModalOpen}
         onClose={() => {
@@ -416,7 +345,7 @@ const Dashboard: React.FC = () => {
         onUpdate={handleUpdateGoal}
         goal={editingGoal}
       />
-    </Box>
+    </MobileLayout>
   );
 };
 
