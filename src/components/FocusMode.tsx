@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '../integrations/supabase/client';
-import { Target, Play, Pause, RotateCcw, Clock } from 'lucide-react';
+import { Target, Play, Pause, RotateCcw, Clock, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface FocusSession {
@@ -28,6 +28,7 @@ const FocusMode: React.FC = () => {
   const [sessionType, setSessionType] = useState<'work' | 'break' | 'longbreak'>('work');
   const [customDuration, setCustomDuration] = useState(25);
   const [completedSessions, setCompletedSessions] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -48,6 +49,63 @@ const FocusMode: React.FC = () => {
   useEffect(() => {
     fetchCompletedSessions();
   }, []);
+
+  // Handle fullscreen mode
+  useEffect(() => {
+    if (isActive && sessionType === 'work') {
+      enterFullscreen();
+    } else {
+      exitFullscreen();
+    }
+
+    // Prevent navigation during active work sessions
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isActive && sessionType === 'work') {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (isActive && sessionType === 'work') {
+        e.preventDefault();
+        window.history.pushState(null, '', window.location.href);
+      }
+    };
+
+    if (isActive && sessionType === 'work') {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      window.addEventListener('popstate', handlePopState);
+      window.history.pushState(null, '', window.location.href);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isActive, sessionType]);
+
+  const enterFullscreen = async () => {
+    try {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      }
+    } catch (error) {
+      console.log('Fullscreen not supported or denied');
+    }
+  };
+
+  const exitFullscreen = async () => {
+    try {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (error) {
+      console.log('Error exiting fullscreen');
+    }
+  };
 
   const fetchCompletedSessions = async () => {
     try {
@@ -168,6 +226,13 @@ const FocusMode: React.FC = () => {
     }
   };
 
+  const forceExitFocus = () => {
+    setIsActive(false);
+    setCurrentSession(null);
+    exitFullscreen();
+    toast.info('Focus session ended');
+  };
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -189,6 +254,56 @@ const FocusMode: React.FC = () => {
       case 'longbreak': return 'from-blue-400 to-indigo-400';
     }
   };
+
+  // Fullscreen focus mode layout
+  if (isActive && sessionType === 'work' && isFullscreen) {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-gray-900 to-black text-white flex flex-col items-center justify-center z-50">
+        <Button
+          onClick={forceExitFocus}
+          className="absolute top-4 right-4 bg-red-500 hover:bg-red-600"
+          size="sm"
+        >
+          <X size={20} />
+        </Button>
+        
+        <div className="text-center">
+          <div className={`mx-auto w-80 h-80 rounded-full bg-gradient-to-br ${getSessionColor()} flex items-center justify-center mb-8 shadow-2xl`}>
+            <div className="bg-white rounded-full w-72 h-72 flex flex-col items-center justify-center text-black">
+              <div className="text-6xl font-bold mb-4">
+                {formatTime(timeLeft)}
+              </div>
+              <div className="text-lg text-gray-600 mb-2">{getSessionTypeLabel()}</div>
+              <div className="text-sm text-gray-500">
+                Stay focused!
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-center space-x-4">
+            <Button
+              onClick={pauseSession}
+              size="lg"
+              className="bg-yellow-500 hover:bg-yellow-600 text-white"
+            >
+              <Pause size={24} className="mr-2" />
+              Pause
+            </Button>
+            
+            <Button
+              onClick={resetSession}
+              size="lg"
+              variant="outline"
+              className="bg-white text-black border-white hover:bg-gray-100"
+            >
+              <RotateCcw size={24} className="mr-2" />
+              Reset
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Card className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-xl">

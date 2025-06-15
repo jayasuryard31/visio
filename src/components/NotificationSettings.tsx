@@ -26,16 +26,30 @@ const NotificationSettings: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [pushSupported, setPushSupported] = useState(false);
   const [pushPermission, setPushPermission] = useState<NotificationPermission>('default');
+  const [pushSubscription, setPushSubscription] = useState<PushSubscription | null>(null);
 
   useEffect(() => {
     checkPushSupport();
     fetchNotificationPreferences();
+    checkExistingSubscription();
   }, []);
 
   const checkPushSupport = () => {
-    if ('Notification' in window && 'serviceWorker' in navigator) {
+    if ('Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window) {
       setPushSupported(true);
       setPushPermission(Notification.permission);
+    }
+  };
+
+  const checkExistingSubscription = async () => {
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+        setPushSubscription(subscription);
+      } catch (error) {
+        console.error('Error checking push subscription:', error);
+      }
     }
   };
 
@@ -68,26 +82,94 @@ const NotificationSettings: React.FC = () => {
     }
   };
 
-  const requestPushPermission = async () => {
+  const enablePushNotifications = async () => {
     if (!pushSupported) {
       toast.error('Push notifications are not supported in this browser');
       return;
     }
 
     try {
+      // Request notification permission
       const permission = await Notification.requestPermission();
       setPushPermission(permission);
       
-      if (permission === 'granted') {
-        toast.success('Push notifications enabled!');
-        // Here you would typically register the service worker and get the push subscription
-      } else {
+      if (permission !== 'granted') {
         toast.error('Push notification permission denied');
+        return;
       }
+
+      // Register service worker and get push subscription
+      const registration = await navigator.serviceWorker.ready;
+      
+      const vapidPublicKey = 'BMqS9a8JyU5SWdvl-YfXE-jPY8VdJxKPg-7X8BdE8j4mzCwjRJKvJYh9sWqyN2x3JzK8vQ5nF6BdHg7R2dY5XwA'; // Replace with your VAPID public key
+      
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+      });
+
+      setPushSubscription(subscription);
+
+      // Save subscription to Supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error } = await supabase
+          .from('push_subscriptions')
+          .upsert({
+            user_id: user.id,
+            endpoint: subscription.endpoint,
+            p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')!))),
+            auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')!))),
+          });
+
+        if (error) {
+          console.error('Error saving push subscription:', error);
+        }
+      }
+
+      toast.success('Push notifications enabled successfully!');
     } catch (error) {
-      console.error('Error requesting push permission:', error);
-      toast.error('Failed to request push permission');
+      console.error('Error enabling push notifications:', error);
+      toast.error('Failed to enable push notifications');
     }
+  };
+
+  const disablePushNotifications = async () => {
+    try {
+      if (pushSubscription) {
+        await pushSubscription.unsubscribe();
+        setPushSubscription(null);
+        
+        // Remove subscription from Supabase
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { error } = await supabase
+            .from('push_subscriptions')
+            .delete()
+            .eq('user_id', user.id);
+
+          if (error) {
+            console.error('Error removing push subscription:', error);
+          }
+        }
+      }
+      
+      toast.success('Push notifications disabled');
+    } catch (error) {
+      console.error('Error disabling push notifications:', error);
+      toast.error('Failed to disable push notifications');
+    }
+  };
+
+  const urlBase64ToUint8Array = (base64String: string) => {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
   };
 
   const updatePreferences = async (updates: Partial<NotificationPreference>) => {
@@ -141,18 +223,6 @@ const NotificationSettings: React.FC = () => {
     setLoading(false);
   };
 
-  const testNotification = () => {
-    if (pushPermission === 'granted') {
-      new Notification('Visio Test Notification', {
-        body: 'Your notifications are working perfectly!',
-        icon: '/visio.png',
-        badge: '/visio.png'
-      });
-    } else {
-      toast.error('Please enable push notifications first');
-    }
-  };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Push Notifications */}
@@ -167,26 +237,38 @@ const NotificationSettings: React.FC = () => {
             <div>
               <h4 className="font-medium">Browser Notifications</h4>
               <p className="text-sm text-gray-500">
-                Status: {pushPermission === 'granted' ? 'Enabled' : pushPermission === 'denied' ? 'Blocked' : 'Not requested'}
+                Status: {pushSubscription ? 'Enabled' : pushPermission === 'denied' ? 'Blocked' : 'Disabled'}
               </p>
             </div>
             <div className="space-x-2">
-              {pushPermission !== 'granted' && (
+              {!pushSubscription ? (
                 <Button
-                  onClick={requestPushPermission}
-                  disabled={!pushSupported}
+                  onClick={enablePushNotifications}
+                  disabled={!pushSupported || pushPermission === 'denied'}
                   size="sm"
+                  className="bg-green-500 hover:bg-green-600"
                 >
                   Enable
                 </Button>
-              )}
-              {pushPermission === 'granted' && (
-                <Button onClick={testNotification} size="sm" variant="outline">
-                  Test
+              ) : (
+                <Button
+                  onClick={disablePushNotifications}
+                  size="sm"
+                  variant="destructive"
+                >
+                  Disable
                 </Button>
               )}
             </div>
           </div>
+
+          {pushPermission === 'denied' && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">
+                Notifications are blocked. Please enable them in your browser settings to receive push notifications.
+              </p>
+            </div>
+          )}
         </div>
       </Card>
 
@@ -206,6 +288,7 @@ const NotificationSettings: React.FC = () => {
             <Switch
               checked={preferences?.goalReminders ?? true}
               onCheckedChange={(checked) => updatePreferences({ goalReminders: checked })}
+              disabled={loading}
             />
           </div>
 
@@ -217,6 +300,7 @@ const NotificationSettings: React.FC = () => {
             <Switch
               checked={preferences?.dailyCheckinReminders ?? true}
               onCheckedChange={(checked) => updatePreferences({ dailyCheckinReminders: checked })}
+              disabled={loading}
             />
           </div>
 
@@ -228,6 +312,7 @@ const NotificationSettings: React.FC = () => {
                 value={preferences?.reminderTime ?? '09:00'}
                 onChange={(e) => updatePreferences({ reminderTime: e.target.value })}
                 className="w-32"
+                disabled={loading}
               />
             </div>
           )}
@@ -240,6 +325,7 @@ const NotificationSettings: React.FC = () => {
             <Switch
               checked={preferences?.focusSessionReminders ?? true}
               onCheckedChange={(checked) => updatePreferences({ focusSessionReminders: checked })}
+              disabled={loading}
             />
           </div>
 
@@ -251,6 +337,7 @@ const NotificationSettings: React.FC = () => {
             <Switch
               checked={preferences?.streakNotifications ?? true}
               onCheckedChange={(checked) => updatePreferences({ streakNotifications: checked })}
+              disabled={loading}
             />
           </div>
 
@@ -262,6 +349,7 @@ const NotificationSettings: React.FC = () => {
             <Switch
               checked={preferences?.milestoneNotifications ?? true}
               onCheckedChange={(checked) => updatePreferences({ milestoneNotifications: checked })}
+              disabled={loading}
             />
           </div>
         </div>
