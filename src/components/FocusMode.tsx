@@ -130,12 +130,12 @@ const FocusMode: React.FC = () => {
       if (error) {
         console.error('Error creating session:', error);
         toast.error('Failed to start session');
-      } else {
+      } else if (data) {
         setCurrentSession({
           id: data.id,
           userId: data.user_id,
           duration: data.duration,
-          completedDuration: data.completed_duration,
+          completedDuration: data.completed_duration || 0,
           sessionType: data.session_type,
           status: data.status,
           startedAt: data.started_at,
