@@ -8,12 +8,18 @@ interface QuickActionsProps {
   onAddGoal: () => void;
   onShowAnalytics: () => void;
   onShowMoodTracker: () => void;
+  onShowJournal: () => void;
+  onShowSchedule: () => void;
+  onShowFocusMode: () => void;
 }
 
 const QuickActions: React.FC<QuickActionsProps> = ({
   onAddGoal,
   onShowAnalytics,
-  onShowMoodTracker
+  onShowMoodTracker,
+  onShowJournal,
+  onShowSchedule,
+  onShowFocusMode
 }) => {
   const actions = [
     {
@@ -38,19 +44,19 @@ const QuickActions: React.FC<QuickActionsProps> = ({
       icon: <BookOpen size={20} />,
       label: 'Journal',
       color: 'from-green-400 to-teal-400',
-      onClick: () => {}
+      onClick: onShowJournal
     },
     {
       icon: <Calendar size={20} />,
       label: 'Schedule',
       color: 'from-yellow-400 to-orange-400',
-      onClick: () => {}
+      onClick: onShowSchedule
     },
     {
       icon: <Target size={20} />,
       label: 'Focus Mode',
       color: 'from-purple-400 to-pink-400',
-      onClick: () => {}
+      onClick: onShowFocusMode
     }
   ];
 

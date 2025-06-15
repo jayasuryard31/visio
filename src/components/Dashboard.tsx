@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Goal } from '../types';
 import { User } from '@supabase/supabase-js';
@@ -16,6 +17,10 @@ import MoodTracker from './MoodTracker';
 import ProgressAnalytics from './ProgressAnalytics';
 import QuickActions from './QuickActions';
 import StreakTracker from './StreakTracker';
+import Journal from './Journal';
+import Schedule from './Schedule';
+import FocusMode from './FocusMode';
+import NotificationSettings from './NotificationSettings';
 
 const Dashboard: React.FC = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -62,7 +67,7 @@ const Dashboard: React.FC = () => {
     if (error) {
       console.error('Error fetching goals:', error);
     } else {
-      // Map database fields to our Goal interface
+      // Map database fields to our Goal interface with proper type casting
       const mappedGoals: Goal[] = (data || []).map(goal => ({
         id: goal.id,
         title: goal.title,
@@ -73,7 +78,7 @@ const Dashboard: React.FC = () => {
         userId: goal.user_id,
         notes: goal.notes || undefined,
         isCompleted: goal.is_completed || false,
-        priority: goal.priority || 'medium',
+        priority: (goal.priority as 'low' | 'medium' | 'high') || 'medium',
         category: goal.category || 'personal',
         progressPercentage: goal.progress_percentage || 0,
         reminderEnabled: goal.reminder_enabled || false,
@@ -82,7 +87,7 @@ const Dashboard: React.FC = () => {
         streakCount: goal.streak_count || 0,
         lastActivityDate: goal.last_activity_date || undefined,
         estimatedCompletionDate: goal.estimated_completion_date || undefined,
-        colorTheme: goal.color_theme || 'orange',
+        colorTheme: (goal.color_theme as 'orange' | 'blue' | 'green' | 'purple' | 'red' | 'pink' | 'yellow') || 'orange',
       }));
       setGoals(mappedGoals);
     }
@@ -225,11 +230,13 @@ const Dashboard: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-6 mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="goals">Goals</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="wellness">Wellness</TabsTrigger>
+            <TabsTrigger value="productivity">Productivity</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8">
@@ -241,6 +248,9 @@ const Dashboard: React.FC = () => {
               onAddGoal={() => setIsAddModalOpen(true)}
               onShowAnalytics={() => setActiveTab('analytics')}
               onShowMoodTracker={() => setActiveTab('wellness')}
+              onShowJournal={() => setActiveTab('productivity')}
+              onShowSchedule={() => setActiveTab('productivity')}
+              onShowFocusMode={() => setActiveTab('productivity')}
             />
 
             {/* Stats Cards */}
@@ -373,6 +383,18 @@ const Dashboard: React.FC = () => {
               <MoodTracker />
               <StreakTracker />
             </div>
+          </TabsContent>
+
+          <TabsContent value="productivity" className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <Journal />
+              <Schedule />
+            </div>
+            <FocusMode />
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <NotificationSettings />
           </TabsContent>
         </Tabs>
       </main>

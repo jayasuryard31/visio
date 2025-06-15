@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '../integrations/supabase/client';
 import { DailyCheckIn } from '../types';
-import { Heart, Star, Zap, Coffee, Sun } from 'lucide-react';
+import { Heart, Star, Zap, Coffee, Sun, Battery, BatteryLow } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MoodTracker: React.FC = () => {
@@ -31,7 +31,18 @@ const MoodTracker: React.FC = () => {
     if (error) {
       console.error('Error fetching today check-in:', error);
     } else if (data) {
-      setTodayCheckIn(data);
+      const mappedCheckIn: DailyCheckIn = {
+        id: data.id,
+        userId: data.user_id,
+        checkInDate: data.check_in_date,
+        moodRating: data.mood_rating,
+        energyLevel: data.energy_level,
+        gratitudeNote: data.gratitude_note,
+        dailyReflection: data.daily_reflection,
+        goalsWorkedOn: data.goals_worked_on,
+        createdAt: data.created_at,
+      };
+      setTodayCheckIn(mappedCheckIn);
       setMoodRating(data.mood_rating || 0);
       setEnergyLevel(data.energy_level || 0);
       setGratitudeNote(data.gratitude_note || '');
@@ -84,7 +95,15 @@ const MoodTracker: React.FC = () => {
   };
 
   const moodIcons = [null, '😢', '😕', '😐', '😊', '😄'];
-  const energyIcons = [null, <Coffee size={20} />, <Star size={20} />, <Heart size={20} />, <Zap size={20} />, <Sun size={20} />];
+  const energyIcons = [
+    null, 
+    <BatteryLow size={20} className="text-red-500" />, 
+    <Coffee size={20} className="text-orange-500" />, 
+    <Battery size={20} className="text-yellow-500" />, 
+    <Zap size={20} className="text-blue-500" />, 
+    <Sun size={20} className="text-green-500" />
+  ];
+  const energyLabels = ['', 'Exhausted', 'Low', 'Moderate', 'High', 'Energized'];
 
   return (
     <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-0 shadow-lg">
@@ -123,17 +142,19 @@ const MoodTracker: React.FC = () => {
           </label>
           <div className="flex space-x-2">
             {[1, 2, 3, 4, 5].map((level) => (
-              <button
-                key={level}
-                onClick={() => setEnergyLevel(level)}
-                className={`p-3 rounded-lg transition-all ${
-                  energyLevel === level
-                    ? 'bg-yellow-200 scale-110 text-yellow-600'
-                    : 'bg-white hover:bg-yellow-100 text-gray-600'
-                }`}
-              >
-                {energyIcons[level]}
-              </button>
+              <div key={level} className="flex flex-col items-center">
+                <button
+                  onClick={() => setEnergyLevel(level)}
+                  className={`p-3 rounded-lg transition-all ${
+                    energyLevel === level
+                      ? 'bg-yellow-200 scale-110'
+                      : 'bg-white hover:bg-yellow-100'
+                  }`}
+                >
+                  {energyIcons[level]}
+                </button>
+                <span className="text-xs text-gray-500 mt-1">{energyLabels[level]}</span>
+              </div>
             ))}
           </div>
         </div>

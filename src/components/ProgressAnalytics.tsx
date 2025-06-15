@@ -32,7 +32,7 @@ const ProgressAnalytics: React.FC = () => {
         userId: goal.user_id,
         notes: goal.notes || undefined,
         isCompleted: goal.is_completed || false,
-        priority: goal.priority || 'medium',
+        priority: (goal.priority as 'low' | 'medium' | 'high') || 'medium',
         category: goal.category || 'personal',
         progressPercentage: goal.progress_percentage || 0,
       }));
