@@ -40,31 +40,35 @@ const Schedule: React.FC = () => {
   }, []);
 
   const fetchEvents = async () => {
-    const today = new Date().toISOString().split('T')[0];
-    const { data, error } = await supabase
-      .from('schedule_events')
-      .select('*')
-      .gte('date', today)
-      .order('date', { ascending: true })
-      .order('start_time', { ascending: true })
-      .limit(10);
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from('schedule_events' as any)
+        .select('*')
+        .gte('date', today)
+        .order('date', { ascending: true })
+        .order('start_time', { ascending: true })
+        .limit(10);
 
-    if (error) {
-      console.error('Error fetching events:', error);
-    } else if (data) {
-      const mappedEvents: ScheduleEvent[] = data.map(event => ({
-        id: event.id,
-        userId: event.user_id,
-        title: event.title,
-        description: event.description,
-        startTime: event.start_time,
-        endTime: event.end_time,
-        date: event.date,
-        location: event.location,
-        category: event.category,
-        createdAt: event.created_at,
-      }));
-      setEvents(mappedEvents);
+      if (error) {
+        console.error('Error fetching events:', error);
+      } else if (data) {
+        const mappedEvents: ScheduleEvent[] = data.map((event: any) => ({
+          id: event.id,
+          userId: event.user_id,
+          title: event.title,
+          description: event.description,
+          startTime: event.start_time,
+          endTime: event.end_time,
+          date: event.date,
+          location: event.location,
+          category: event.category,
+          createdAt: event.created_at,
+        }));
+        setEvents(mappedEvents);
+      }
+    } catch (error) {
+      console.error('Error in fetchEvents:', error);
     }
   };
 
@@ -72,39 +76,44 @@ const Schedule: React.FC = () => {
     if (!newEvent.title.trim() || !newEvent.startTime || !newEvent.endTime) return;
 
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) return;
 
-    const { error } = await supabase
-      .from('schedule_events')
-      .insert([{
-        user_id: user.id,
-        title: newEvent.title,
-        description: newEvent.description || null,
-        start_time: newEvent.startTime,
-        end_time: newEvent.endTime,
-        date: newEvent.date,
-        location: newEvent.location || null,
-        category: newEvent.category,
-      }]);
+      const { error } = await supabase
+        .from('schedule_events' as any)
+        .insert([{
+          user_id: user.id,
+          title: newEvent.title,
+          description: newEvent.description || null,
+          start_time: newEvent.startTime,
+          end_time: newEvent.endTime,
+          date: newEvent.date,
+          location: newEvent.location || null,
+          category: newEvent.category,
+        }]);
 
-    if (error) {
-      console.error('Error creating event:', error);
+      if (error) {
+        console.error('Error creating event:', error);
+        toast.error('Failed to create event');
+      } else {
+        toast.success('Event created successfully!');
+        setNewEvent({
+          title: '',
+          description: '',
+          startTime: '',
+          endTime: '',
+          date: new Date().toISOString().split('T')[0],
+          location: '',
+          category: 'personal'
+        });
+        setIsCreating(false);
+        fetchEvents();
+      }
+    } catch (error) {
+      console.error('Error in handleCreateEvent:', error);
       toast.error('Failed to create event');
-    } else {
-      toast.success('Event created successfully!');
-      setNewEvent({
-        title: '',
-        description: '',
-        startTime: '',
-        endTime: '',
-        date: new Date().toISOString().split('T')[0],
-        location: '',
-        category: 'personal'
-      });
-      setIsCreating(false);
-      fetchEvents();
     }
     setLoading(false);
   };

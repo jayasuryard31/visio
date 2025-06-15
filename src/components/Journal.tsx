@@ -32,26 +32,30 @@ const Journal: React.FC = () => {
   }, []);
 
   const fetchJournalEntries = async () => {
-    const { data, error } = await supabase
-      .from('journal_entries')
-      .select('*')
-      .order('entry_date', { ascending: false })
-      .limit(10);
+    try {
+      const { data, error } = await supabase
+        .from('journal_entries' as any)
+        .select('*')
+        .order('entry_date', { ascending: false })
+        .limit(10);
 
-    if (error) {
-      console.error('Error fetching journal entries:', error);
-    } else if (data) {
-      const mappedEntries: JournalEntry[] = data.map(entry => ({
-        id: entry.id,
-        userId: entry.user_id,
-        title: entry.title,
-        content: entry.content,
-        entryDate: entry.entry_date,
-        mood: entry.mood,
-        tags: entry.tags,
-        createdAt: entry.created_at,
-      }));
-      setEntries(mappedEntries);
+      if (error) {
+        console.error('Error fetching journal entries:', error);
+      } else if (data) {
+        const mappedEntries: JournalEntry[] = data.map((entry: any) => ({
+          id: entry.id,
+          userId: entry.user_id,
+          title: entry.title,
+          content: entry.content,
+          entryDate: entry.entry_date,
+          mood: entry.mood,
+          tags: entry.tags,
+          createdAt: entry.created_at,
+        }));
+        setEntries(mappedEntries);
+      }
+    } catch (error) {
+      console.error('Error in fetchJournalEntries:', error);
     }
   };
 
@@ -59,28 +63,33 @@ const Journal: React.FC = () => {
     if (!newTitle.trim() || !newContent.trim()) return;
 
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) return;
 
-    const { error } = await supabase
-      .from('journal_entries')
-      .insert([{
-        user_id: user.id,
-        title: newTitle,
-        content: newContent,
-        entry_date: new Date().toISOString().split('T')[0],
-      }]);
+      const { error } = await supabase
+        .from('journal_entries' as any)
+        .insert([{
+          user_id: user.id,
+          title: newTitle,
+          content: newContent,
+          entry_date: new Date().toISOString().split('T')[0],
+        }]);
 
-    if (error) {
-      console.error('Error creating journal entry:', error);
+      if (error) {
+        console.error('Error creating journal entry:', error);
+        toast.error('Failed to create journal entry');
+      } else {
+        toast.success('Journal entry created successfully!');
+        setNewTitle('');
+        setNewContent('');
+        setIsCreating(false);
+        fetchJournalEntries();
+      }
+    } catch (error) {
+      console.error('Error in handleCreateEntry:', error);
       toast.error('Failed to create journal entry');
-    } else {
-      toast.success('Journal entry created successfully!');
-      setNewTitle('');
-      setNewContent('');
-      setIsCreating(false);
-      fetchJournalEntries();
     }
     setLoading(false);
   };

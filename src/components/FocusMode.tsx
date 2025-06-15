@@ -50,18 +50,22 @@ const FocusMode: React.FC = () => {
   }, []);
 
   const fetchCompletedSessions = async () => {
-    const today = new Date().toISOString().split('T')[0];
-    const { data, error } = await supabase
-      .from('focus_sessions')
-      .select('*')
-      .eq('status', 'completed')
-      .gte('created_at', today)
-      .eq('session_type', 'work');
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from('focus_sessions' as any)
+        .select('*')
+        .eq('status', 'completed')
+        .gte('created_at', today)
+        .eq('session_type', 'work');
 
-    if (error) {
-      console.error('Error fetching focus sessions:', error);
-    } else {
-      setCompletedSessions(data?.length || 0);
+      if (error) {
+        console.error('Error fetching focus sessions:', error);
+      } else {
+        setCompletedSessions(data?.length || 0);
+      }
+    } catch (error) {
+      console.error('Error in fetchCompletedSessions:', error);
     }
   };
 
@@ -69,17 +73,21 @@ const FocusMode: React.FC = () => {
     setIsActive(false);
     
     if (currentSession) {
-      const { error } = await supabase
-        .from('focus_sessions')
-        .update({
-          status: 'completed',
-          completed_duration: currentSession.duration,
-          completed_at: new Date().toISOString(),
-        })
-        .eq('id', currentSession.id);
+      try {
+        const { error } = await supabase
+          .from('focus_sessions' as any)
+          .update({
+            status: 'completed',
+            completed_duration: currentSession.duration,
+            completed_at: new Date().toISOString(),
+          })
+          .eq('id', currentSession.id);
 
-      if (error) {
-        console.error('Error updating session:', error);
+        if (error) {
+          console.error('Error updating session:', error);
+        }
+      } catch (error) {
+        console.error('Error in handleSessionComplete:', error);
       }
     }
 
@@ -101,39 +109,44 @@ const FocusMode: React.FC = () => {
   };
 
   const startSession = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    const duration = timeLeft;
-    const { data, error } = await supabase
-      .from('focus_sessions')
-      .insert([{
-        user_id: user.id,
-        duration: duration,
-        completed_duration: 0,
-        session_type: sessionType,
-        status: 'active',
-        started_at: new Date().toISOString(),
-      }])
-      .select()
-      .single();
+      const duration = timeLeft;
+      const { data, error } = await supabase
+        .from('focus_sessions' as any)
+        .insert([{
+          user_id: user.id,
+          duration: duration,
+          completed_duration: 0,
+          session_type: sessionType,
+          status: 'active',
+          started_at: new Date().toISOString(),
+        }])
+        .select()
+        .single();
 
-    if (error) {
-      console.error('Error creating session:', error);
+      if (error) {
+        console.error('Error creating session:', error);
+        toast.error('Failed to start session');
+      } else {
+        setCurrentSession({
+          id: data.id,
+          userId: data.user_id,
+          duration: data.duration,
+          completedDuration: data.completed_duration,
+          sessionType: data.session_type,
+          status: data.status,
+          startedAt: data.started_at,
+          createdAt: data.created_at,
+        });
+        setIsActive(true);
+        toast.success('Focus session started!');
+      }
+    } catch (error) {
+      console.error('Error in startSession:', error);
       toast.error('Failed to start session');
-    } else {
-      setCurrentSession({
-        id: data.id,
-        userId: data.user_id,
-        duration: data.duration,
-        completedDuration: data.completed_duration,
-        sessionType: data.session_type,
-        status: data.status,
-        startedAt: data.started_at,
-        createdAt: data.created_at,
-      });
-      setIsActive(true);
-      toast.success('Focus session started!');
     }
   };
 

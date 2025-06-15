@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '../integrations/supabase/client';
 import { Bell, Settings, Smartphone, Clock } from 'lucide-react';
 import { toast } from 'sonner';
@@ -12,14 +11,12 @@ import { toast } from 'sonner';
 interface NotificationPreference {
   id: string;
   userId: string;
-  dailyReminder: boolean;
-  dailyReminderTime: string;
-  goalDeadlines: boolean;
-  weeklyProgress: boolean;
-  motivationalQuotes: boolean;
+  goalReminders: boolean;
+  dailyCheckinReminders: boolean;
   focusSessionReminders: boolean;
-  pushNotificationsEnabled: boolean;
-  emailNotificationsEnabled: boolean;
+  streakNotifications: boolean;
+  milestoneNotifications: boolean;
+  reminderTime: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,28 +40,30 @@ const NotificationSettings: React.FC = () => {
   };
 
   const fetchNotificationPreferences = async () => {
-    const { data, error } = await supabase
-      .from('notification_preferences')
-      .select('*')
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from('notification_preferences' as any)
+        .select('*')
+        .maybeSingle();
 
-    if (error && error.code !== 'PGRST116') {
-      console.error('Error fetching notification preferences:', error);
-    } else if (data) {
-      setPreferences({
-        id: data.id,
-        userId: data.user_id,
-        dailyReminder: data.daily_reminder,
-        dailyReminderTime: data.daily_reminder_time,
-        goalDeadlines: data.goal_deadlines,
-        weeklyProgress: data.weekly_progress,
-        motivationalQuotes: data.motivational_quotes,
-        focusSessionReminders: data.focus_session_reminders,
-        pushNotificationsEnabled: data.push_notifications_enabled,
-        emailNotificationsEnabled: data.email_notifications_enabled,
-        createdAt: data.created_at,
-        updatedAt: data.updated_at,
-      });
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching notification preferences:', error);
+      } else if (data) {
+        setPreferences({
+          id: data.id,
+          userId: data.user_id,
+          goalReminders: data.goal_reminders,
+          dailyCheckinReminders: data.daily_checkin_reminders,
+          focusSessionReminders: data.focus_session_reminders,
+          streakNotifications: data.streak_notifications,
+          milestoneNotifications: data.milestone_notifications,
+          reminderTime: data.reminder_time,
+          createdAt: data.created_at,
+          updatedAt: data.updated_at,
+        });
+      }
+    } catch (error) {
+      console.error('Error in fetchNotificationPreferences:', error);
     }
   };
 
@@ -81,7 +80,6 @@ const NotificationSettings: React.FC = () => {
       if (permission === 'granted') {
         toast.success('Push notifications enabled!');
         // Here you would typically register the service worker and get the push subscription
-        await updatePreferences({ pushNotificationsEnabled: true });
       } else {
         toast.error('Push notification permission denied');
       }
@@ -93,48 +91,51 @@ const NotificationSettings: React.FC = () => {
 
   const updatePreferences = async (updates: Partial<NotificationPreference>) => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) return;
 
-    const updatedPrefs = {
-      user_id: user.id,
-      daily_reminder: updates.dailyReminder ?? preferences?.dailyReminder ?? true,
-      daily_reminder_time: updates.dailyReminderTime ?? preferences?.dailyReminderTime ?? '09:00',
-      goal_deadlines: updates.goalDeadlines ?? preferences?.goalDeadlines ?? true,
-      weekly_progress: updates.weeklyProgress ?? preferences?.weeklyProgress ?? true,
-      motivational_quotes: updates.motivationalQuotes ?? preferences?.motivationalQuotes ?? true,
-      focus_session_reminders: updates.focusSessionReminders ?? preferences?.focusSessionReminders ?? true,
-      push_notifications_enabled: updates.pushNotificationsEnabled ?? preferences?.pushNotificationsEnabled ?? false,
-      email_notifications_enabled: updates.emailNotificationsEnabled ?? preferences?.emailNotificationsEnabled ?? true,
-      updated_at: new Date().toISOString(),
-    };
+      const updatedPrefs = {
+        user_id: user.id,
+        goal_reminders: updates.goalReminders ?? preferences?.goalReminders ?? true,
+        daily_checkin_reminders: updates.dailyCheckinReminders ?? preferences?.dailyCheckinReminders ?? true,
+        focus_session_reminders: updates.focusSessionReminders ?? preferences?.focusSessionReminders ?? true,
+        streak_notifications: updates.streakNotifications ?? preferences?.streakNotifications ?? true,
+        milestone_notifications: updates.milestoneNotifications ?? preferences?.milestoneNotifications ?? true,
+        reminder_time: updates.reminderTime ?? preferences?.reminderTime ?? '09:00',
+        updated_at: new Date().toISOString(),
+      };
 
-    if (preferences) {
-      const { error } = await supabase
-        .from('notification_preferences')
-        .update(updatedPrefs)
-        .eq('id', preferences.id);
+      if (preferences) {
+        const { error } = await supabase
+          .from('notification_preferences' as any)
+          .update(updatedPrefs)
+          .eq('id', preferences.id);
 
-      if (error) {
-        console.error('Error updating preferences:', error);
-        toast.error('Failed to update preferences');
+        if (error) {
+          console.error('Error updating preferences:', error);
+          toast.error('Failed to update preferences');
+        } else {
+          toast.success('Notification preferences updated!');
+          fetchNotificationPreferences();
+        }
       } else {
-        toast.success('Notification preferences updated!');
-        fetchNotificationPreferences();
-      }
-    } else {
-      const { error } = await supabase
-        .from('notification_preferences')
-        .insert([updatedPrefs]);
+        const { error } = await supabase
+          .from('notification_preferences' as any)
+          .insert([updatedPrefs]);
 
-      if (error) {
-        console.error('Error creating preferences:', error);
-        toast.error('Failed to save preferences');
-      } else {
-        toast.success('Notification preferences saved!');
-        fetchNotificationPreferences();
+        if (error) {
+          console.error('Error creating preferences:', error);
+          toast.error('Failed to save preferences');
+        } else {
+          toast.success('Notification preferences saved!');
+          fetchNotificationPreferences();
+        }
       }
+    } catch (error) {
+      console.error('Error in updatePreferences:', error);
+      toast.error('Failed to update preferences');
     }
     setLoading(false);
   };
@@ -185,29 +186,6 @@ const NotificationSettings: React.FC = () => {
               )}
             </div>
           </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium">Push Notifications</h4>
-              <p className="text-sm text-gray-500">Receive notifications on this device</p>
-            </div>
-            <Switch
-              checked={preferences?.pushNotificationsEnabled ?? false}
-              onCheckedChange={(checked) => updatePreferences({ pushNotificationsEnabled: checked })}
-              disabled={pushPermission !== 'granted'}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium">Email Notifications</h4>
-              <p className="text-sm text-gray-500">Receive notifications via email</p>
-            </div>
-            <Switch
-              checked={preferences?.emailNotificationsEnabled ?? true}
-              onCheckedChange={(checked) => updatePreferences({ emailNotificationsEnabled: checked })}
-            />
-          </div>
         </div>
       </Card>
 
@@ -221,59 +199,37 @@ const NotificationSettings: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="font-medium">Daily Reminders</h4>
-              <p className="text-sm text-gray-500">Daily motivation and goal check-ins</p>
+              <h4 className="font-medium">Goal Reminders</h4>
+              <p className="text-sm text-gray-500">Daily reminders about your goals</p>
             </div>
             <Switch
-              checked={preferences?.dailyReminder ?? true}
-              onCheckedChange={(checked) => updatePreferences({ dailyReminder: checked })}
+              checked={preferences?.goalReminders ?? true}
+              onCheckedChange={(checked) => updatePreferences({ goalReminders: checked })}
             />
           </div>
 
-          {preferences?.dailyReminder && (
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium">Daily Check-in Reminders</h4>
+              <p className="text-sm text-gray-500">Reminders to log your daily mood and reflection</p>
+            </div>
+            <Switch
+              checked={preferences?.dailyCheckinReminders ?? true}
+              onCheckedChange={(checked) => updatePreferences({ dailyCheckinReminders: checked })}
+            />
+          </div>
+
+          {preferences?.goalReminders && (
             <div className="ml-4 flex items-center space-x-2">
               <Clock size={16} className="text-gray-400" />
               <Input
                 type="time"
-                value={preferences?.dailyReminderTime ?? '09:00'}
-                onChange={(e) => updatePreferences({ dailyReminderTime: e.target.value })}
+                value={preferences?.reminderTime ?? '09:00'}
+                onChange={(e) => updatePreferences({ reminderTime: e.target.value })}
                 className="w-32"
               />
             </div>
           )}
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium">Goal Deadlines</h4>
-              <p className="text-sm text-gray-500">Reminders for approaching deadlines</p>
-            </div>
-            <Switch
-              checked={preferences?.goalDeadlines ?? true}
-              onCheckedChange={(checked) => updatePreferences({ goalDeadlines: checked })}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium">Weekly Progress</h4>
-              <p className="text-sm text-gray-500">Weekly summary of your achievements</p>
-            </div>
-            <Switch
-              checked={preferences?.weeklyProgress ?? true}
-              onCheckedChange={(checked) => updatePreferences({ weeklyProgress: checked })}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium">Motivational Quotes</h4>
-              <p className="text-sm text-gray-500">Daily inspirational messages</p>
-            </div>
-            <Switch
-              checked={preferences?.motivationalQuotes ?? true}
-              onCheckedChange={(checked) => updatePreferences({ motivationalQuotes: checked })}
-            />
-          </div>
 
           <div className="flex items-center justify-between">
             <div>
@@ -283,6 +239,28 @@ const NotificationSettings: React.FC = () => {
             <Switch
               checked={preferences?.focusSessionReminders ?? true}
               onCheckedChange={(checked) => updatePreferences({ focusSessionReminders: checked })}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium">Streak Notifications</h4>
+              <p className="text-sm text-gray-500">Celebrate your goal streaks</p>
+            </div>
+            <Switch
+              checked={preferences?.streakNotifications ?? true}
+              onCheckedChange={(checked) => updatePreferences({ streakNotifications: checked })}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium">Milestone Notifications</h4>
+              <p className="text-sm text-gray-500">Get notified when you reach milestones</p>
+            </div>
+            <Switch
+              checked={preferences?.milestoneNotifications ?? true}
+              onCheckedChange={(checked) => updatePreferences({ milestoneNotifications: checked })}
             />
           </div>
         </div>

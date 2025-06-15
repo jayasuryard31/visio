@@ -69,6 +69,53 @@ export type Database = {
         }
         Relationships: []
       }
+      focus_sessions: {
+        Row: {
+          completed_at: string | null
+          completed_duration: number | null
+          created_at: string
+          duration: number
+          goal_id: string | null
+          id: string
+          session_type: string
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_duration?: number | null
+          created_at?: string
+          duration: number
+          goal_id?: string | null
+          id?: string
+          session_type?: string
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_duration?: number | null
+          created_at?: string
+          duration?: number
+          goal_id?: string | null
+          id?: string
+          session_type?: string
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "focus_sessions_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       goal_milestones: {
         Row: {
           completed_at: string | null
@@ -182,6 +229,78 @@ export type Database = {
         }
         Relationships: []
       }
+      journal_entries: {
+        Row: {
+          content: string
+          created_at: string
+          entry_date: string
+          id: string
+          mood: string | null
+          tags: string[] | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          mood?: string | null
+          tags?: string[] | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          entry_date?: string
+          id?: string
+          mood?: string | null
+          tags?: string[] | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          daily_checkin_reminders: boolean | null
+          focus_session_reminders: boolean | null
+          goal_reminders: boolean | null
+          id: string
+          milestone_notifications: boolean | null
+          reminder_time: string | null
+          streak_notifications: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_checkin_reminders?: boolean | null
+          focus_session_reminders?: boolean | null
+          goal_reminders?: boolean | null
+          id?: string
+          milestone_notifications?: boolean | null
+          reminder_time?: string | null
+          streak_notifications?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_checkin_reminders?: boolean | null
+          focus_session_reminders?: boolean | null
+          goal_reminders?: boolean | null
+          id?: string
+          milestone_notifications?: boolean | null
+          reminder_time?: string | null
+          streak_notifications?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -203,6 +322,45 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      schedule_events: {
+        Row: {
+          category: string
+          created_at: string
+          date: string
+          description: string | null
+          end_time: string
+          id: string
+          location: string | null
+          start_time: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          date: string
+          description?: string | null
+          end_time: string
+          id?: string
+          location?: string | null
+          start_time: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date?: string
+          description?: string | null
+          end_time?: string
+          id?: string
+          location?: string | null
+          start_time?: string
+          title?: string
+          user_id?: string
         }
         Relationships: []
       }
