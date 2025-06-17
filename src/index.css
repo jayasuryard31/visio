@@ -1,168 +1,190 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Visio Design System - Warm & Inspiring */
+:root {
+  /* Light theme colors */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.75rem;
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
 
-@layer base {
-  :root {
-    --background: 39 100% 98%;
-    --foreground: 20 14% 20%;
+  /* Vibrant color palette for Visio */
+  --visio-orange: 25 95% 53%;
+  --visio-red: 0 72% 51%;
+  --visio-pink: 330 81% 60%;
+  --visio-purple: 262 83% 58%;
+  --visio-blue: 217 91% 60%;
+  --visio-cyan: 189 94% 43%;
+  --visio-green: 142 76% 36%;
+  --visio-emerald: 158 64% 52%;
+  --visio-yellow: 54 91% 60%;
+  --visio-lime: 84 81% 44%;
+}
 
-    --card: 0 0% 100%;
-    --card-foreground: 20 14% 20%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 14% 20%;
-
-    --primary: 15 100% 58%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 39 50% 95%;
-    --secondary-foreground: 39 50% 25%;
-
-    --muted: 39 30% 96%;
-    --muted-foreground: 39 15% 45%;
-
-    --accent: 39 96% 60%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 39 30% 90%;
-    --input: 39 30% 90%;
-    --ring: 15 100% 58%;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 39 100% 98%;
-    --sidebar-foreground: 20 14% 20%;
-    --sidebar-primary: 15 100% 58%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 39 50% 95%;
-    --sidebar-accent-foreground: 39 50% 25%;
-    --sidebar-border: 39 30% 90%;
-    --sidebar-ring: 15 100% 58%;
-
-    /* Custom Visio Variables */
-    --gradient-primary: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    --gradient-secondary: linear-gradient(135deg, #f7931e 0%, #ffd23f 100%);
-    --gradient-accent: linear-gradient(135deg, #e74c3c 0%, #ff6b35 100%);
-    --shadow-warm: 0 20px 40px -12px rgba(255, 107, 53, 0.25);
-  }
-
-  .dark {
-    --background: 20 25% 8%;
-    --foreground: 39 100% 98%;
-
-    --card: 20 20% 12%;
-    --card-foreground: 39 100% 98%;
-
-    --popover: 20 20% 12%;
-    --popover-foreground: 39 100% 98%;
-
-    --primary: 15 100% 58%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 20 15% 18%;
-    --secondary-foreground: 39 85% 85%;
-
-    --muted: 20 15% 15%;
-    --muted-foreground: 20 10% 55%;
-
-    --accent: 39 96% 60%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 20 15% 18%;
-    --input: 20 15% 18%;
-    --ring: 15 100% 58%;
-
-    --sidebar-background: 20 25% 8%;
-    --sidebar-foreground: 39 100% 98%;
-    --sidebar-primary: 15 100% 58%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 20 15% 18%;
-    --sidebar-accent-foreground: 39 85% 85%;
-    --sidebar-border: 20 15% 18%;
-    --sidebar-ring: 15 100% 58%;
-  }
+.dark {
+  /* Dark theme colors */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 94.1%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
 }
 
 @layer base {
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground font-sans;
-  }
-
-  /* Custom gradient backgrounds */
-  .gradient-primary {
-    background: var(--gradient-primary);
-  }
-
-  .gradient-secondary {
-    background: var(--gradient-secondary);
-  }
-
-  .gradient-accent {
-    background: var(--gradient-accent);
-  }
-
-  .shadow-warm {
-    box-shadow: var(--shadow-warm);
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 }
 
 @layer components {
-  .glass-effect {
-    @apply backdrop-blur-xl bg-white/80 border border-white/20;
+  /* Vibrant gradients for different components */
+  .gradient-orange {
+    @apply bg-gradient-to-r from-orange-400 to-red-500;
   }
-
-  .dark .glass-effect {
-    @apply bg-gray-900/80 border-gray-700/30;
+  
+  .gradient-purple {
+    @apply bg-gradient-to-r from-purple-400 to-pink-500;
+  }
+  
+  .gradient-blue {
+    @apply bg-gradient-to-r from-blue-400 to-cyan-500;
+  }
+  
+  .gradient-green {
+    @apply bg-gradient-to-r from-green-400 to-emerald-500;
+  }
+  
+  .gradient-rainbow {
+    @apply bg-gradient-to-r from-orange-400 via-purple-500 to-blue-500;
+  }
+  
+  /* Glass morphism effects */
+  .glass {
+    @apply bg-white/20 dark:bg-gray-800/20 backdrop-blur-lg border border-white/30 dark:border-gray-700/30;
+  }
+  
+  .glass-card {
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl;
+  }
+  
+  /* Custom animations */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 4s ease-in-out infinite;
+  }
+  
+  .animate-gradient {
+    animation: gradient 15s ease infinite;
+    background-size: 400% 400%;
   }
 }
 
-/* Beautiful animations */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(255, 107, 53, 0.6); }
+/* Custom scrollbar for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 8px;
 }
 
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+.dark ::-webkit-scrollbar-track {
+  @apply bg-gray-800;
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded-lg;
 }
 
-.animate-shimmer {
-  animation: shimmer 2s infinite;
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+/* Light mode scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-.animate-gradient-shift {
-  animation: gradientShift 6s ease infinite;
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-lg;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }

@@ -6,6 +6,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { useState, useEffect } from 'react';
+import { ThemeProvider as CustomThemeProvider } from './contexts/ThemeContext';
+import { usePWA } from './hooks/usePWA';
+import LandingPage from './components/LandingPage';
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -33,29 +37,59 @@ const theme = createTheme({
   },
 });
 
+const AppContent = () => {
+  const { isPWA } = usePWA();
+  const [showLanding, setShowLanding] = useState(true);
+  const [hasVisited, setHasVisited] = useState(false);
+
+  useEffect(() => {
+    const visited = localStorage.getItem('visio-has-visited');
+    if (visited || isPWA) {
+      setShowLanding(false);
+      setHasVisited(true);
+    }
+  }, [isPWA]);
+
+  const handleGetStarted = () => {
+    localStorage.setItem('visio-has-visited', 'true');
+    setShowLanding(false);
+    setHasVisited(true);
+  };
+
+  if (showLanding && !hasVisited && !isPWA) {
+    return <LandingPage onGetStarted={handleGetStarted} />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/goals" element={<Goals />} />
+      <Route path="/analytics" element={<Analytics />} />
+      <Route path="/wellness" element={<Wellness />} />
+      <Route path="/journal" element={<Journal />} />
+      <Route path="/schedule" element={<Schedule />} />
+      <Route path="/focus" element={<FocusMode />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/goals" element={<Goals />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/wellness" element={<Wellness />} />
-            <Route path="/journal" element={<Journal />} />
-            <Route path="/schedule" element={<Schedule />} />
-            <Route path="/focus" element={<FocusMode />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
+    <CustomThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </CustomThemeProvider>
   </QueryClientProvider>
 );
 

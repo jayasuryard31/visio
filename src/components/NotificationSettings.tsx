@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -94,8 +95,7 @@ const NotificationSettings: React.FC = () => {
       if (permission === 'granted') {
         const registration = await navigator.serviceWorker.ready;
         
-        // You'll need to replace this with your actual VAPID public key
-        const vapidPublicKey = 'YOUR_VAPID_PUBLIC_KEY';
+        const vapidPublicKey = 'BECFStW9K4LgJwAPLBZOHPJ1z0fRzCLyRWMp9r9JkklMLWhQfGGvE8RbLAaTsJjX6zXZWsYNbabN7FU-PQ5A2vE';
         
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
@@ -104,7 +104,6 @@ const NotificationSettings: React.FC = () => {
 
         setPushSubscription(subscription);
         
-        // Save subscription to Supabase
         await savePushSubscription(subscription);
         
         toast.success('Push notifications enabled!');
@@ -123,7 +122,6 @@ const NotificationSettings: React.FC = () => {
         await pushSubscription.unsubscribe();
         setPushSubscription(null);
         
-        // Remove subscription from Supabase
         await removePushSubscription();
         
         toast.success('Push notifications disabled');
