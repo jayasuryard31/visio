@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '../integrations/supabase/client';
-import { Target, Play, Pause, RotateCcw, Clock } from 'lucide-react';
+import { Target, Play, Pause, RotateCcw, Clock, Minimize, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface FocusSession {
@@ -28,6 +27,7 @@ const FocusMode: React.FC = () => {
   const [sessionType, setSessionType] = useState<'work' | 'break' | 'longbreak'>('work');
   const [customDuration, setCustomDuration] = useState(25);
   const [completedSessions, setCompletedSessions] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -48,6 +48,57 @@ const FocusMode: React.FC = () => {
   useEffect(() => {
     fetchCompletedSessions();
   }, []);
+
+  // Prevent navigation when in active session
+  useEffect(() => {
+    if (isActive && isFullscreen) {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = '';
+      };
+
+      const handlePopState = (e: PopStateEvent) => {
+        e.preventDefault();
+        window.history.pushState(null, '', window.location.href);
+        toast.error('Please complete or pause your focus session first');
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      window.addEventListener('popstate', handlePopState);
+      window.history.pushState(null, '', window.location.href);
+
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }
+  }, [isActive, isFullscreen]);
+
+  const enterFullscreen = () => {
+    const element = document.documentElement;
+    if (element.requestFullscreen) {
+      element.requestFullscreen().then(() => {
+        setIsFullscreen(true);
+      }).catch(() => {
+        // Fallback for browsers that don't support fullscreen
+        setIsFullscreen(true);
+      });
+    } else {
+      setIsFullscreen(true);
+    }
+  };
+
+  const exitFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen().then(() => {
+        setIsFullscreen(false);
+      }).catch(() => {
+        setIsFullscreen(false);
+      });
+    } else {
+      setIsFullscreen(false);
+    }
+  };
 
   const fetchCompletedSessions = async () => {
     try {
@@ -106,6 +157,11 @@ const FocusMode: React.FC = () => {
     }
     
     setCurrentSession(null);
+    
+    // Exit fullscreen when session completes
+    if (isFullscreen) {
+      exitFullscreen();
+    }
   };
 
   const startSession = async () => {
@@ -143,6 +199,7 @@ const FocusMode: React.FC = () => {
           createdAt: sessionData.created_at,
         });
         setIsActive(true);
+        enterFullscreen();
         toast.success('Focus session started!');
       }
     } catch (error) {
@@ -153,6 +210,9 @@ const FocusMode: React.FC = () => {
 
   const pauseSession = () => {
     setIsActive(false);
+    if (isFullscreen) {
+      exitFullscreen();
+    }
   };
 
   const resetSession = () => {
@@ -165,6 +225,10 @@ const FocusMode: React.FC = () => {
       setTimeLeft(5 * 60);
     } else {
       setTimeLeft(15 * 60);
+    }
+
+    if (isFullscreen) {
+      exitFullscreen();
     }
   };
 
@@ -189,6 +253,70 @@ const FocusMode: React.FC = () => {
       case 'longbreak': return 'from-blue-400 to-indigo-400';
     }
   };
+
+  if (isFullscreen) {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center z-50">
+        <div className="text-center">
+          {/* Exit button */}
+          <Button
+            onClick={exitFullscreen}
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 text-white hover:bg-white/10"
+          >
+            <X size={24} />
+          </Button>
+
+          {/* Timer Display */}
+          <div className={`mx-auto w-80 h-80 rounded-full bg-gradient-to-br ${getSessionColor()} flex items-center justify-center mb-8 shadow-2xl`}>
+            <div className="bg-white rounded-full w-72 h-72 flex flex-col items-center justify-center">
+              <div className="text-6xl font-bold text-gray-800 mb-4">
+                {formatTime(timeLeft)}
+              </div>
+              <div className="text-lg text-gray-600 mb-2">{getSessionTypeLabel()}</div>
+              <div className="text-sm text-gray-500">
+                Sessions today: {completedSessions}
+              </div>
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="flex justify-center space-x-6">
+            {!isActive ? (
+              <Button
+                onClick={() => setIsActive(true)}
+                size="lg"
+                className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 text-lg"
+              >
+                <Play size={24} className="mr-2" />
+                Resume
+              </Button>
+            ) : (
+              <Button
+                onClick={pauseSession}
+                size="lg"
+                className="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-4 text-lg"
+              >
+                <Pause size={24} className="mr-2" />
+                Pause
+              </Button>
+            )}
+            
+            <Button
+              onClick={resetSession}
+              size="lg"
+              variant="outline"
+              className="border-white text-white hover:bg-white/10 px-8 py-4 text-lg"
+            >
+              <RotateCcw size={24} className="mr-2" />
+              Reset
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Card className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-xl">

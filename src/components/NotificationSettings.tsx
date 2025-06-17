@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,16 +25,30 @@ const NotificationSettings: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [pushSupported, setPushSupported] = useState(false);
   const [pushPermission, setPushPermission] = useState<NotificationPermission>('default');
+  const [pushSubscription, setPushSubscription] = useState<PushSubscription | null>(null);
 
   useEffect(() => {
     checkPushSupport();
     fetchNotificationPreferences();
+    checkExistingSubscription();
   }, []);
 
   const checkPushSupport = () => {
     if ('Notification' in window && 'serviceWorker' in navigator) {
       setPushSupported(true);
       setPushPermission(Notification.permission);
+    }
+  };
+
+  const checkExistingSubscription = async () => {
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+        setPushSubscription(subscription);
+      } catch (error) {
+        console.error('Error checking existing subscription:', error);
+      }
     }
   };
 
@@ -68,7 +81,7 @@ const NotificationSettings: React.FC = () => {
     }
   };
 
-  const requestPushPermission = async () => {
+  const enablePushNotifications = async () => {
     if (!pushSupported) {
       toast.error('Push notifications are not supported in this browser');
       return;
@@ -79,14 +92,84 @@ const NotificationSettings: React.FC = () => {
       setPushPermission(permission);
       
       if (permission === 'granted') {
+        const registration = await navigator.serviceWorker.ready;
+        
+        // You'll need to replace this with your actual VAPID public key
+        const vapidPublicKey = 'YOUR_VAPID_PUBLIC_KEY';
+        
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: vapidPublicKey
+        });
+
+        setPushSubscription(subscription);
+        
+        // Save subscription to Supabase
+        await savePushSubscription(subscription);
+        
         toast.success('Push notifications enabled!');
-        // Here you would typically register the service worker and get the push subscription
       } else {
         toast.error('Push notification permission denied');
       }
     } catch (error) {
-      console.error('Error requesting push permission:', error);
-      toast.error('Failed to request push permission');
+      console.error('Error enabling push notifications:', error);
+      toast.error('Failed to enable push notifications');
+    }
+  };
+
+  const disablePushNotifications = async () => {
+    try {
+      if (pushSubscription) {
+        await pushSubscription.unsubscribe();
+        setPushSubscription(null);
+        
+        // Remove subscription from Supabase
+        await removePushSubscription();
+        
+        toast.success('Push notifications disabled');
+      }
+    } catch (error) {
+      console.error('Error disabling push notifications:', error);
+      toast.error('Failed to disable push notifications');
+    }
+  };
+
+  const savePushSubscription = async (subscription: PushSubscription) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('push_subscriptions')
+        .insert([{
+          user_id: user.id,
+          subscription: JSON.stringify(subscription),
+          created_at: new Date().toISOString()
+        }]);
+
+      if (error) {
+        console.error('Error saving push subscription:', error);
+      }
+    } catch (error) {
+      console.error('Error in savePushSubscription:', error);
+    }
+  };
+
+  const removePushSubscription = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('push_subscriptions')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error removing push subscription:', error);
+      }
+    } catch (error) {
+      console.error('Error in removePushSubscription:', error);
     }
   };
 
@@ -141,18 +224,6 @@ const NotificationSettings: React.FC = () => {
     setLoading(false);
   };
 
-  const testNotification = () => {
-    if (pushPermission === 'granted') {
-      new Notification('Visio Test Notification', {
-        body: 'Your notifications are working perfectly!',
-        icon: '/visio.png',
-        badge: '/visio.png'
-      });
-    } else {
-      toast.error('Please enable push notifications first');
-    }
-  };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Push Notifications */}
@@ -167,23 +238,32 @@ const NotificationSettings: React.FC = () => {
             <div>
               <h4 className="font-medium">Browser Notifications</h4>
               <p className="text-sm text-gray-500">
-                Status: {pushPermission === 'granted' ? 'Enabled' : pushPermission === 'denied' ? 'Blocked' : 'Not requested'}
+                Status: {pushSubscription ? 'Enabled' : pushPermission === 'denied' ? 'Blocked' : 'Disabled'}
               </p>
             </div>
             <div className="space-x-2">
-              {pushPermission !== 'granted' && (
+              {!pushSubscription && pushPermission !== 'denied' && (
                 <Button
-                  onClick={requestPushPermission}
+                  onClick={enablePushNotifications}
                   disabled={!pushSupported}
                   size="sm"
                 >
                   Enable
                 </Button>
               )}
-              {pushPermission === 'granted' && (
-                <Button onClick={testNotification} size="sm" variant="outline">
-                  Test
+              {pushSubscription && (
+                <Button 
+                  onClick={disablePushNotifications} 
+                  size="sm" 
+                  variant="outline"
+                >
+                  Disable
                 </Button>
+              )}
+              {pushPermission === 'denied' && (
+                <p className="text-sm text-red-500">
+                  Please enable notifications in browser settings
+                </p>
               )}
             </div>
           </div>
