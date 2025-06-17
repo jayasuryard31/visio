@@ -8,8 +8,8 @@ const JournalPage: React.FC = () => {
     <MobileLayout>
       <div className="space-y-6">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Journal</h1>
-          <p className="text-gray-600">Reflect on your journey and thoughts</p>
+          <h1 className="text-2xl font-bold text-visio-primary dark:text-visio-primary mb-2">Journal</h1>
+          <p className="text-visio-secondary dark:text-visio-secondary">Reflect on your journey and thoughts</p>
         </div>
         <Journal />
       </div>

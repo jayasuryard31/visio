@@ -163,37 +163,31 @@ const Dashboard: React.FC = () => {
     {
       icon: Target,
       label: 'Goals',
-      color: 'from-orange-400 to-red-400',
       path: '/goals'
     },
     {
       icon: Heart,
       label: 'Wellness',
-      color: 'from-pink-400 to-purple-400',
       path: '/wellness'
     },
     {
       icon: BarChart3,
       label: 'Analytics',
-      color: 'from-blue-400 to-indigo-400',
       path: '/analytics'
     },
     {
       icon: BookOpen,
       label: 'Journal',
-      color: 'from-green-400 to-teal-400',
       path: '/journal'
     },
     {
       icon: Calendar,
       label: 'Schedule',
-      color: 'from-yellow-400 to-orange-400',
       path: '/schedule'
     },
     {
       icon: Focus,
       label: 'Focus Mode',
-      color: 'from-purple-400 to-pink-400',
       path: '/focus'
     }
   ];
@@ -204,7 +198,7 @@ const Dashboard: React.FC = () => {
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading your journey...</p>
+            <p className="text-visio-secondary dark:text-visio-secondary">Loading your journey...</p>
           </div>
         </div>
       </MobileLayout>
@@ -216,11 +210,11 @@ const Dashboard: React.FC = () => {
       <div className="space-y-6">
         {/* Welcome Section */}
         <div className="text-center py-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+          <div className="w-20 h-20 bg-visio-primary rounded-full flex items-center justify-center mx-auto mb-4 glossy-card">
             <Sparkles className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to Visio</h1>
-          <p className="text-gray-600">Manifest your dreams into reality</p>
+          <h1 className="text-3xl font-bold text-visio-primary dark:text-visio-primary mb-2">Welcome to Visio</h1>
+          <p className="text-visio-secondary dark:text-visio-secondary">Manifest your dreams into reality</p>
         </div>
 
         {/* Daily Reminder */}
@@ -228,52 +222,52 @@ const Dashboard: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-4 bg-gradient-to-br from-orange-400 to-red-400 text-white border-0 shadow-xl">
+          <Card className="p-4 bg-visio-primary text-white border-0 glossy-card">
             <div className="text-center">
-              <Target className="w-8 h-8 mx-auto mb-2 opacity-80" />
+              <Target className="w-8 h-8 mx-auto mb-2 opacity-90" />
               <div className="text-2xl font-bold">{goals.filter(g => !g.isCompleted).length}</div>
-              <div className="text-xs opacity-80">Active Goals</div>
+              <div className="text-xs opacity-90">Active Goals</div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-gradient-to-br from-green-400 to-emerald-400 text-white border-0 shadow-xl">
+          <Card className="p-4 bg-visio-primary text-white border-0 glossy-card">
             <div className="text-center">
-              <Lightbulb className="w-8 h-8 mx-auto mb-2 opacity-80" />
+              <Lightbulb className="w-8 h-8 mx-auto mb-2 opacity-90" />
               <div className="text-2xl font-bold">{goals.filter(g => g.isCompleted).length}</div>
-              <div className="text-xs opacity-80">Completed</div>
+              <div className="text-xs opacity-90">Completed</div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-gradient-to-br from-blue-400 to-indigo-400 text-white border-0 shadow-xl">
+          <Card className="p-4 bg-visio-primary text-white border-0 glossy-card">
             <div className="text-center">
-              <Calendar className="w-8 h-8 mx-auto mb-2 opacity-80" />
+              <Calendar className="w-8 h-8 mx-auto mb-2 opacity-90" />
               <div className="text-2xl font-bold">
                 {goals.reduce((sum, goal) => sum + (goal.targetDays || 0), 0)}
               </div>
-              <div className="text-xs opacity-80">Total Days</div>
+              <div className="text-xs opacity-90">Total Days</div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-gradient-to-br from-purple-400 to-pink-400 text-white border-0 shadow-xl">
+          <Card className="p-4 bg-visio-primary text-white border-0 glossy-card">
             <div className="text-center">
-              <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-80" />
+              <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-90" />
               <div className="text-2xl font-bold">
                 {goals.length > 0 ? Math.round(goals.reduce((sum, goal) => sum + (goal.progressPercentage || 0), 0) / goals.length) : 0}%
               </div>
-              <div className="text-xs opacity-80">Avg Progress</div>
+              <div className="text-xs opacity-90">Avg Progress</div>
             </div>
           </Card>
         </div>
 
         {/* Quick Actions */}
-        <Card className="p-6 bg-white/80 backdrop-blur-sm border-0 shadow-xl">
-          <h3 className="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
+        <Card className="p-6 glossy-card">
+          <h3 className="text-lg font-bold text-visio-primary dark:text-visio-primary mb-4">Quick Actions</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {quickActions.map((action, index) => (
               <button
                 key={index}
                 onClick={() => navigate(action.path)}
-                className={`p-4 rounded-xl bg-gradient-to-br ${action.color} text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex flex-col items-center space-y-2`}
+                className="p-4 rounded-xl bg-visio-primary text-white glossy-button flex flex-col items-center space-y-2"
               >
                 <action.icon className="w-6 h-6" />
                 <span className="text-sm font-medium">{action.label}</span>
@@ -285,29 +279,29 @@ const Dashboard: React.FC = () => {
         {/* Recent Goals */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-800">Recent Goals</h2>
+            <h2 className="text-xl font-bold text-visio-primary dark:text-visio-primary">Recent Goals</h2>
             <Button
               onClick={() => navigate('/goals')}
               variant="outline"
               size="sm"
-              className="text-orange-600 border-orange-300 hover:bg-orange-50"
+              className="text-visio-primary border-visio-primary hover:bg-visio-surface-variant dark:text-visio-primary dark:border-visio-primary"
             >
               View All
             </Button>
           </div>
           
           {goals.length === 0 ? (
-            <Card className="p-8 text-center bg-white/80 backdrop-blur-sm border-dashed border-2 border-orange-300">
-              <Sparkles className="w-12 h-12 text-orange-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+            <Card className="p-8 text-center glossy-card border-dashed border-2 border-visio-primary">
+              <Sparkles className="w-12 h-12 text-visio-primary mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-visio-primary dark:text-visio-primary mb-2">
                 Start Your Journey
               </h3>
-              <p className="text-gray-500 mb-4">
+              <p className="text-visio-secondary dark:text-visio-secondary mb-4">
                 Create your first goal and begin manifesting your dreams into reality.
               </p>
               <Button
                 onClick={() => setIsAddModalOpen(true)}
-                className="bg-gradient-to-r from-orange-400 to-red-400 text-white border-0"
+                className="glossy-button"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Create Your First Goal

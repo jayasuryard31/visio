@@ -5,57 +5,64 @@
 @tailwind utilities;
 
 :root {
-  /* Light theme colors - using solid colors from reference */
-  --background: 45 100% 95%; /* Light cream */
-  --foreground: 25 45% 20%; /* Dark brown */
+  /* Light theme colors - uniform orange-based palette */
+  --background: 45 100% 97%; /* Very light cream */
+  --foreground: 25 45% 15%; /* Dark brown for text */
   --card: 0 0% 100%;
-  --card-foreground: 25 45% 20%;
+  --card-foreground: 25 45% 15%;
   --popover: 0 0% 100%;
-  --popover-foreground: 25 45% 20%;
-  --primary: 25 100% 50%; /* Vibrant orange */
+  --popover-foreground: 25 45% 15%;
+  --primary: 25 100% 55%; /* Main orange */
   --primary-foreground: 0 0% 100%;
-  --secondary: 45 100% 85%; /* Light cream */
-  --secondary-foreground: 25 45% 20%;
-  --muted: 45 100% 90%;
-  --muted-foreground: 25 25% 45%;
-  --accent: 15 100% 60%; /* Orange accent */
+  --secondary: 25 20% 95%; /* Light neutral */
+  --secondary-foreground: 25 45% 15%;
+  --muted: 25 15% 93%;
+  --muted-foreground: 25 25% 40%;
+  --accent: 25 100% 55%; /* Same as primary for uniformity */
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-  --border: 45 50% 85%;
-  --input: 45 50% 90%;
-  --ring: 25 100% 50%;
+  --border: 25 20% 88%;
+  --input: 25 15% 95%;
+  --ring: 25 100% 55%;
   --radius: 0.75rem;
 
-  /* App-specific solid colors from reference */
-  --visio-brown: 25 45% 35%; /* Dark brown */
-  --visio-orange: 25 100% 50%; /* Vibrant orange */
-  --visio-peach: 35 100% 70%; /* Light orange/peach */
-  --visio-cream: 45 100% 85%; /* Light cream */
-  --visio-yellow: 50 100% 80%; /* Light yellow */
+  /* Uniform solid color palette */
+  --visio-primary: 25 100% 55%; /* Main orange */
+  --visio-surface: 0 0% 100%; /* White surface */
+  --visio-surface-variant: 25 15% 96%; /* Light surface variant */
+  --visio-text-primary: 25 45% 15%; /* Dark text */
+  --visio-text-secondary: 25 25% 45%; /* Secondary text */
 }
 
 .dark {
-  /* Improved dark theme colors */
-  --background: 25 25% 8%; /* Dark brown background */
+  /* Dark theme with better contrast */
+  --background: 25 25% 6%; /* Very dark brown */
   --foreground: 45 100% 95%; /* Light cream text */
-  --card: 25 20% 12%; /* Darker brown cards */
-  --card-foreground: 45 100% 90%;
-  --popover: 25 20% 12%;
-  --popover-foreground: 45 100% 90%;
-  --primary: 25 100% 55%; /* Brighter orange for dark mode */
-  --primary-foreground: 25 25% 8%;
-  --secondary: 25 15% 18%; /* Dark secondary */
-  --secondary-foreground: 45 80% 85%;
-  --muted: 25 15% 15%;
-  --muted-foreground: 45 40% 60%;
-  --accent: 15 100% 65%; /* Bright orange accent */
-  --accent-foreground: 25 25% 8%;
+  --card: 25 20% 10%; /* Dark surface */
+  --card-foreground: 45 100% 95%;
+  --popover: 25 20% 10%;
+  --popover-foreground: 45 100% 95%;
+  --primary: 25 100% 60%; /* Brighter orange for dark mode */
+  --primary-foreground: 25 25% 6%;
+  --secondary: 25 15% 15%; /* Dark secondary */
+  --secondary-foreground: 45 80% 90%;
+  --muted: 25 15% 12%;
+  --muted-foreground: 45 40% 65%;
+  --accent: 25 100% 60%; /* Same as primary */
+  --accent-foreground: 25 25% 6%;
   --destructive: 0 62.8% 50%;
   --destructive-foreground: 45 100% 95%;
-  --border: 25 15% 20%;
-  --input: 25 15% 20%;
-  --ring: 25 100% 55%;
+  --border: 25 15% 18%;
+  --input: 25 15% 18%;
+  --ring: 25 100% 60%;
+
+  /* Dark mode uniform colors */
+  --visio-primary: 25 100% 60%; /* Brighter orange for dark */
+  --visio-surface: 25 20% 10%; /* Dark surface */
+  --visio-surface-variant: 25 15% 15%; /* Dark surface variant */
+  --visio-text-primary: 45 100% 95%; /* Light text */
+  --visio-text-secondary: 45 40% 70%; /* Secondary light text */
 }
 
 @layer base {
@@ -69,62 +76,67 @@
 }
 
 @layer components {
-  /* Solid color gradients using reference palette */
-  .gradient-warm {
-    @apply bg-gradient-to-r from-orange-500 to-orange-400;
+  /* Uniform solid color classes */
+  .bg-visio-primary {
+    background-color: hsl(var(--visio-primary));
   }
   
-  .gradient-earth {
-    @apply bg-gradient-to-r from-amber-600 to-orange-500;
+  .bg-visio-surface {
+    background-color: hsl(var(--visio-surface));
   }
   
-  .gradient-sunset {
-    @apply bg-gradient-to-r from-orange-400 to-yellow-300;
+  .bg-visio-surface-variant {
+    background-color: hsl(var(--visio-surface-variant));
   }
   
-  .gradient-primary {
-    @apply bg-gradient-to-r from-orange-500 to-amber-400;
+  .text-visio-primary {
+    color: hsl(var(--visio-text-primary));
+  }
+  
+  .text-visio-secondary {
+    color: hsl(var(--visio-text-secondary));
   }
 
-  /* Solid background colors */
-  .bg-visio-brown {
-    background-color: hsl(var(--visio-brown));
-  }
-  
-  .bg-visio-orange {
-    background-color: hsl(var(--visio-orange));
-  }
-  
-  .bg-visio-peach {
-    background-color: hsl(var(--visio-peach));
-  }
-  
-  .bg-visio-cream {
-    background-color: hsl(var(--visio-cream));
-  }
-  
-  .bg-visio-yellow {
-    background-color: hsl(var(--visio-yellow));
-  }
-
-  /* Text colors */
-  .text-visio-brown {
-    color: hsl(var(--visio-brown));
-  }
-  
-  .text-visio-orange {
-    color: hsl(var(--visio-orange));
-  }
-
-  /* Glass morphism effects with improved dark mode support */
-  .glass {
-    @apply bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/40 dark:border-gray-600/40;
-  }
-  
+  /* Glossy effect for cards */
   .glass-card {
     @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-0 shadow-xl;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
   
+  .glossy-card {
+    @apply bg-visio-surface dark:bg-visio-surface backdrop-blur-sm border border-white/20 dark:border-gray-700/30;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .glossy-card:hover {
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .glossy-button {
+    @apply bg-visio-primary text-white border-0 shadow-lg;
+    box-shadow: 
+      0 4px 16px rgba(255, 107, 53, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+  }
+  
+  .glossy-button:hover {
+    box-shadow: 
+      0 6px 20px rgba(255, 107, 53, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
   /* Custom animations */
   .animate-float {
     animation: float 6s ease-in-out infinite;
@@ -136,11 +148,6 @@
   
   .animate-pulse-slow {
     animation: pulse 4s ease-in-out infinite;
-  }
-  
-  .animate-gradient {
-    animation: gradient 15s ease infinite;
-    background-size: 400% 400%;
   }
 
   .animate-phone-float {
@@ -176,18 +183,6 @@
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
   }
 }
 
