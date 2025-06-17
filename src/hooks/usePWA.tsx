@@ -1,12 +1,12 @@
 
-import { useState, useEffect } from 'react';
+import React from 'react';
 
 export const usePWA = () => {
-  const [isPWA, setIsPWA] = useState(false);
-  const [isInstallable, setIsInstallable] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isPWA, setIsPWA] = React.useState(false);
+  const [isInstallable, setIsInstallable] = React.useState(false);
+  const [deferredPrompt, setDeferredPrompt] = React.useState<any>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Check if app is running as PWA
     const checkPWA = () => {
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches;

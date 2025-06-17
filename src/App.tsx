@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { useState, useEffect } from 'react';
 import { ThemeProvider as CustomThemeProvider } from './contexts/ThemeContext';
 import { usePWA } from './hooks/usePWA';
 import LandingPage from './components/LandingPage';
@@ -37,12 +37,12 @@ const theme = createTheme({
   },
 });
 
-const AppContent = () => {
+const AppContent: React.FC = () => {
   const { isPWA } = usePWA();
-  const [showLanding, setShowLanding] = useState(true);
-  const [hasVisited, setHasVisited] = useState(false);
+  const [showLanding, setShowLanding] = React.useState(true);
+  const [hasVisited, setHasVisited] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const visited = localStorage.getItem('visio-has-visited');
     if (visited || isPWA) {
       setShowLanding(false);
@@ -76,7 +76,7 @@ const AppContent = () => {
   );
 };
 
-const App = () => (
+const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <CustomThemeProvider>
       <ThemeProvider theme={theme}>
