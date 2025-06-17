@@ -47,16 +47,16 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children, showAddGoal = fal
   ];
 
   const SidebarContent = () => (
-    <div className="h-full flex flex-col bg-gradient-to-b from-orange-50 to-orange-100">
+    <div className="h-full flex flex-col bg-gradient-to-b from-orange-50 to-amber-50 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
-      <div className="p-6 border-b border-orange-200">
+      <div className="p-6 border-b border-orange-200 dark:border-gray-700">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-400 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-800">Visio</h2>
-            <p className="text-sm text-gray-600">Manifest your dreams</p>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white">Visio</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Manifest your dreams</p>
           </div>
         </div>
       </div>
@@ -72,8 +72,8 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children, showAddGoal = fal
               onClick={() => setIsOpen(false)}
               className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                 isActive
-                  ? 'bg-gradient-to-r from-orange-400 to-red-400 text-white shadow-lg'
-                  : 'text-gray-700 hover:bg-white/50 hover:shadow-md'
+                  ? 'bg-orange-500 text-white shadow-lg'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-700/50 hover:shadow-md'
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -84,11 +84,11 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children, showAddGoal = fal
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-orange-200">
+      <div className="p-4 border-t border-orange-200 dark:border-gray-700">
         <Button
           onClick={handleSignOut}
           variant="outline"
-          className="w-full justify-start text-gray-700 border-gray-300 hover:bg-red-50 hover:text-red-600 hover:border-red-300"
+          className="w-full justify-start text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 hover:border-red-300"
         >
           <LogOut className="w-4 h-4 mr-3" />
           Sign Out
@@ -98,13 +98,13 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children, showAddGoal = fal
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
       {/* Mobile Header */}
-      <div className="md:hidden bg-white/80 backdrop-blur-lg border-b border-orange-200 sticky top-0 z-40">
+      <div className="md:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-orange-200 dark:border-gray-700 sticky top-0 z-40">
         <div className="flex items-center justify-between p-4">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-orange-600">
+              <Button variant="ghost" size="icon" className="text-orange-600 dark:text-orange-400">
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
@@ -115,14 +115,14 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children, showAddGoal = fal
 
           <div className="flex items-center space-x-2">
             <Sparkles className="w-6 h-6 text-orange-500" />
-            <h1 className="text-lg font-bold text-gray-800">Visio</h1>
+            <h1 className="text-lg font-bold text-gray-800 dark:text-white">Visio</h1>
           </div>
 
           {showAddGoal && onAddGoal && (
             <Button
               onClick={onAddGoal}
               size="sm"
-              className="bg-gradient-to-r from-orange-400 to-red-400 text-white border-0 shadow-lg"
+              className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg"
             >
               <Plus className="w-4 h-4" />
             </Button>
@@ -133,7 +133,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children, showAddGoal = fal
       {/* Desktop Layout */}
       <div className="hidden md:flex min-h-screen">
         {/* Desktop Sidebar */}
-        <div className="w-80 bg-white/80 backdrop-blur-lg border-r border-orange-200 sticky top-0 h-screen">
+        <div className="w-80 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-r border-orange-200 dark:border-gray-700 sticky top-0 h-screen">
           <SidebarContent />
         </div>
 
@@ -143,7 +143,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children, showAddGoal = fal
             <div className="absolute top-6 right-6 z-10">
               <Button
                 onClick={onAddGoal}
-                className="bg-gradient-to-r from-orange-400 to-red-400 text-white border-0 shadow-lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 New Goal

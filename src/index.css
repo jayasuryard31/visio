@@ -5,72 +5,57 @@
 @tailwind utilities;
 
 :root {
-  /* Light theme colors */
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
+  /* Light theme colors - using solid colors from reference */
+  --background: 45 100% 95%; /* Light cream */
+  --foreground: 25 45% 20%; /* Dark brown */
   --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
+  --card-foreground: 25 45% 20%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --primary: 221.2 83.2% 53.3%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222.2 84% 4.9%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96%;
-  --accent-foreground: 222.2 84% 4.9%;
+  --popover-foreground: 25 45% 20%;
+  --primary: 25 100% 50%; /* Vibrant orange */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 45 100% 85%; /* Light cream */
+  --secondary-foreground: 25 45% 20%;
+  --muted: 45 100% 90%;
+  --muted-foreground: 25 25% 45%;
+  --accent: 15 100% 60%; /* Orange accent */
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 221.2 83.2% 53.3%;
+  --border: 45 50% 85%;
+  --input: 45 50% 90%;
+  --ring: 25 100% 50%;
   --radius: 0.75rem;
-  --chart-1: 12 76% 61%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 197 37% 24%;
-  --chart-4: 43 74% 66%;
-  --chart-5: 27 87% 67%;
 
-  /* Vibrant color palette for Visio */
-  --visio-orange: 25 95% 53%;
-  --visio-red: 0 72% 51%;
-  --visio-pink: 330 81% 60%;
-  --visio-purple: 262 83% 58%;
-  --visio-blue: 217 91% 60%;
-  --visio-cyan: 189 94% 43%;
-  --visio-green: 142 76% 36%;
-  --visio-emerald: 158 64% 52%;
-  --visio-yellow: 54 91% 60%;
-  --visio-lime: 84 81% 44%;
+  /* App-specific solid colors from reference */
+  --visio-brown: 25 45% 35%; /* Dark brown */
+  --visio-orange: 25 100% 50%; /* Vibrant orange */
+  --visio-peach: 35 100% 70%; /* Light orange/peach */
+  --visio-cream: 45 100% 85%; /* Light cream */
+  --visio-yellow: 50 100% 80%; /* Light yellow */
 }
 
 .dark {
-  /* Dark theme colors */
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 217.2 91.2% 59.8%;
-  --primary-foreground: 222.2 84% 4.9%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 224.3 76.3% 94.1%;
-  --chart-1: 220 70% 50%;
-  --chart-2: 160 60% 45%;
-  --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
+  /* Improved dark theme colors */
+  --background: 25 25% 8%; /* Dark brown background */
+  --foreground: 45 100% 95%; /* Light cream text */
+  --card: 25 20% 12%; /* Darker brown cards */
+  --card-foreground: 45 100% 90%;
+  --popover: 25 20% 12%;
+  --popover-foreground: 45 100% 90%;
+  --primary: 25 100% 55%; /* Brighter orange for dark mode */
+  --primary-foreground: 25 25% 8%;
+  --secondary: 25 15% 18%; /* Dark secondary */
+  --secondary-foreground: 45 80% 85%;
+  --muted: 25 15% 15%;
+  --muted-foreground: 45 40% 60%;
+  --accent: 15 100% 65%; /* Bright orange accent */
+  --accent-foreground: 25 25% 8%;
+  --destructive: 0 62.8% 50%;
+  --destructive-foreground: 45 100% 95%;
+  --border: 25 15% 20%;
+  --input: 25 15% 20%;
+  --ring: 25 100% 55%;
 }
 
 @layer base {
@@ -84,39 +69,69 @@
 }
 
 @layer components {
-  /* Vibrant gradients for different components */
-  .gradient-orange {
-    @apply bg-gradient-to-r from-orange-400 to-red-500;
+  /* Solid color gradients using reference palette */
+  .gradient-warm {
+    @apply bg-gradient-to-r from-orange-500 to-orange-400;
   }
   
-  .gradient-purple {
-    @apply bg-gradient-to-r from-purple-400 to-pink-500;
+  .gradient-earth {
+    @apply bg-gradient-to-r from-amber-600 to-orange-500;
   }
   
-  .gradient-blue {
-    @apply bg-gradient-to-r from-blue-400 to-cyan-500;
+  .gradient-sunset {
+    @apply bg-gradient-to-r from-orange-400 to-yellow-300;
   }
   
-  .gradient-green {
-    @apply bg-gradient-to-r from-green-400 to-emerald-500;
+  .gradient-primary {
+    @apply bg-gradient-to-r from-orange-500 to-amber-400;
+  }
+
+  /* Solid background colors */
+  .bg-visio-brown {
+    background-color: hsl(var(--visio-brown));
   }
   
-  .gradient-rainbow {
-    @apply bg-gradient-to-r from-orange-400 via-purple-500 to-blue-500;
+  .bg-visio-orange {
+    background-color: hsl(var(--visio-orange));
   }
   
-  /* Glass morphism effects */
+  .bg-visio-peach {
+    background-color: hsl(var(--visio-peach));
+  }
+  
+  .bg-visio-cream {
+    background-color: hsl(var(--visio-cream));
+  }
+  
+  .bg-visio-yellow {
+    background-color: hsl(var(--visio-yellow));
+  }
+
+  /* Text colors */
+  .text-visio-brown {
+    color: hsl(var(--visio-brown));
+  }
+  
+  .text-visio-orange {
+    color: hsl(var(--visio-orange));
+  }
+
+  /* Glass morphism effects with improved dark mode support */
   .glass {
-    @apply bg-white/20 dark:bg-gray-800/20 backdrop-blur-lg border border-white/30 dark:border-gray-700/30;
+    @apply bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/40 dark:border-gray-600/40;
   }
   
   .glass-card {
-    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-0 shadow-xl;
+    @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-0 shadow-xl;
   }
   
   /* Custom animations */
   .animate-float {
     animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-bounce-slow {
+    animation: bounce 3s ease-in-out infinite;
   }
   
   .animate-pulse-slow {
@@ -127,6 +142,14 @@
     animation: gradient 15s ease infinite;
     background-size: 400% 400%;
   }
+
+  .animate-phone-float {
+    animation: phoneFloat 4s ease-in-out infinite;
+  }
+
+  .animate-rotate-slow {
+    animation: rotateSlow 20s linear infinite;
+  }
 }
 
 @keyframes float {
@@ -135,6 +158,24 @@
   }
   50% {
     transform: translateY(-20px);
+  }
+}
+
+@keyframes phoneFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(2deg);
+  }
+}
+
+@keyframes rotateSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -150,21 +191,21 @@
   }
 }
 
-/* Custom scrollbar for dark mode */
+/* Improved scrollbar for both themes */
 .dark ::-webkit-scrollbar {
   width: 8px;
 }
 
 .dark ::-webkit-scrollbar-track {
-  @apply bg-gray-800;
+  @apply bg-gray-900;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  @apply bg-gray-600 rounded-lg;
+  @apply bg-orange-600 rounded-lg;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500;
+  @apply bg-orange-500;
 }
 
 /* Light mode scrollbar */
@@ -173,15 +214,15 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  @apply bg-orange-50;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-lg;
+  @apply bg-orange-300 rounded-lg;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  @apply bg-orange-400;
 }
 
 /* Smooth transitions for theme switching */

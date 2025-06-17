@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 type Theme = 'light' | 'dark';
@@ -19,18 +18,15 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = React.useState<Theme>('light');
+  const [theme, setTheme] = React.useState<Theme>('light'); // Default to light
 
   React.useEffect(() => {
     // Check localStorage for saved theme
     const savedTheme = localStorage.getItem('visio-theme') as Theme;
     if (savedTheme) {
       setTheme(savedTheme);
-    } else {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(prefersDark ? 'dark' : 'light');
     }
+    // Removed system preference check to keep light as default
   }, []);
 
   React.useEffect(() => {
