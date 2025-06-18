@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -100,20 +99,16 @@ const Journal: React.FC = () => {
   );
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-0 shadow-lg">
+    <Card className="p-6 glossy-card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold text-gray-800 flex items-center">
-          <BookOpen className="mr-2 text-green-500" size={24} />
+        <h3 className="text-xl font-bold text-visio-primary dark:text-visio-primary flex items-center">
+          <BookOpen className="mr-2 text-visio-primary" size={24} />
           Personal Journal
         </h3>
         <Button
           onClick={() => setIsCreating(!isCreating)}
           size="sm"
-          style={{
-            background: 'linear-gradient(45deg, #10b981, #059669)',
-            color: 'white',
-            border: 'none'
-          }}
+          className="glossy-button"
         >
           <Plus size={16} className="mr-1" />
           New Entry
@@ -122,42 +117,38 @@ const Journal: React.FC = () => {
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-visio-secondary dark:text-visio-secondary" size={16} />
         <Input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search your journal..."
-          className="pl-10"
+          className="pl-10 glossy-card"
         />
       </div>
 
       {/* Create New Entry */}
       {isCreating && (
-        <Card className="p-4 mb-4 bg-white">
+        <Card className="p-4 mb-4 glossy-card">
           <div className="space-y-3">
             <Input
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder="Entry title..."
-              className="font-medium"
+              className="font-medium glossy-card"
             />
             <Textarea
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
               placeholder="What's on your mind today?"
               rows={4}
-              className="resize-none"
+              className="resize-none glossy-card"
             />
             <div className="flex space-x-2">
               <Button
                 onClick={handleCreateEntry}
                 disabled={loading || !newTitle.trim() || !newContent.trim()}
                 size="sm"
-                style={{
-                  background: 'linear-gradient(45deg, #10b981, #059669)',
-                  color: 'white',
-                  border: 'none'
-                }}
+                className="glossy-button"
               >
                 {loading ? 'Saving...' : 'Save Entry'}
               </Button>
@@ -165,6 +156,7 @@ const Journal: React.FC = () => {
                 onClick={() => setIsCreating(false)}
                 variant="outline"
                 size="sm"
+                className="border-visio-primary text-visio-primary hover:bg-visio-surface-variant dark:border-visio-primary dark:text-visio-primary"
               >
                 Cancel
               </Button>
@@ -176,21 +168,21 @@ const Journal: React.FC = () => {
       {/* Journal Entries */}
       <div className="space-y-3 max-h-96 overflow-y-auto">
         {filteredEntries.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-visio-secondary dark:text-visio-secondary">
             <BookOpen size={48} className="mx-auto mb-3 opacity-50" />
             <p>No journal entries yet. Start writing your thoughts!</p>
           </div>
         ) : (
           filteredEntries.map((entry) => (
-            <Card key={entry.id} className="p-4 bg-white hover:shadow-md transition-shadow">
+            <Card key={entry.id} className="p-4 glossy-card hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-2">
-                <h4 className="font-semibold text-gray-800">{entry.title}</h4>
-                <div className="flex items-center text-sm text-gray-500">
+                <h4 className="font-semibold text-visio-primary dark:text-visio-primary">{entry.title}</h4>
+                <div className="flex items-center text-sm text-visio-secondary dark:text-visio-secondary">
                   <Calendar size={14} className="mr-1" />
                   {new Date(entry.entryDate).toLocaleDateString()}
                 </div>
               </div>
-              <p className="text-gray-600 text-sm line-clamp-3">{entry.content}</p>
+              <p className="text-visio-secondary dark:text-visio-secondary text-sm line-clamp-3">{entry.content}</p>
             </Card>
           ))
         )}

@@ -248,9 +248,9 @@ const FocusMode: React.FC = () => {
 
   const getSessionColor = () => {
     switch (sessionType) {
-      case 'work': return 'from-red-400 to-orange-400';
-      case 'break': return 'from-green-400 to-emerald-400';
-      case 'longbreak': return 'from-blue-400 to-indigo-400';
+      case 'work': return 'bg-red-500';
+      case 'break': return 'bg-green-500';
+      case 'longbreak': return 'bg-blue-500';
     }
   };
 
@@ -269,7 +269,7 @@ const FocusMode: React.FC = () => {
           </Button>
 
           {/* Timer Display */}
-          <div className={`mx-auto w-80 h-80 rounded-full bg-gradient-to-br ${getSessionColor()} flex items-center justify-center mb-8 shadow-2xl`}>
+          <div className={`mx-auto w-80 h-80 rounded-full ${getSessionColor()} flex items-center justify-center mb-8 shadow-2xl`}>
             <div className="bg-white rounded-full w-72 h-72 flex flex-col items-center justify-center">
               <div className="text-6xl font-bold text-gray-800 mb-4">
                 {formatTime(timeLeft)}
@@ -319,16 +319,16 @@ const FocusMode: React.FC = () => {
   }
 
   return (
-    <Card className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-xl">
+    <Card className="p-8 glossy-card">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2 flex items-center justify-center">
-          <Target className="mr-2 text-red-500" size={28} />
+        <h3 className="text-2xl font-bold text-visio-primary dark:text-visio-primary mb-2 flex items-center justify-center">
+          <Target className="mr-2 text-visio-primary" size={28} />
           Focus Mode
         </h3>
-        <p className="text-gray-600 mb-6">Pomodoro technique for enhanced productivity</p>
+        <p className="text-visio-secondary dark:text-visio-secondary mb-6">Pomodoro technique for enhanced productivity</p>
 
         {/* Timer Display */}
-        <div className={`mx-auto w-64 h-64 rounded-full bg-gradient-to-br ${getSessionColor()} flex items-center justify-center mb-6 shadow-2xl`}>
+        <div className={`mx-auto w-64 h-64 rounded-full ${getSessionColor()} flex items-center justify-center mb-6 shadow-2xl`}>
           <div className="bg-white rounded-full w-56 h-56 flex flex-col items-center justify-center">
             <div className="text-4xl font-bold text-gray-800 mb-2">
               {formatTime(timeLeft)}
@@ -346,7 +346,7 @@ const FocusMode: React.FC = () => {
             <Button
               onClick={startSession}
               size="lg"
-              className="bg-green-500 hover:bg-green-600 text-white"
+              className="glossy-button"
             >
               <Play size={20} className="mr-2" />
               Start
@@ -366,6 +366,7 @@ const FocusMode: React.FC = () => {
             onClick={resetSession}
             size="lg"
             variant="outline"
+            className="border-visio-primary text-visio-primary hover:bg-visio-surface-variant dark:border-visio-primary dark:text-visio-primary"
           >
             <RotateCcw size={20} className="mr-2" />
             Reset
@@ -374,9 +375,9 @@ const FocusMode: React.FC = () => {
 
         {/* Session Settings */}
         {!isActive && (
-          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+          <Card className="grid grid-cols-2 gap-4 max-w-md mx-auto p-4 glossy-card">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-visio-primary dark:text-visio-primary mb-2">
                 Session Type
               </label>
               <Select value={sessionType} onValueChange={(value: any) => {
@@ -389,7 +390,7 @@ const FocusMode: React.FC = () => {
                   setTimeLeft(15 * 60);
                 }
               }}>
-                <SelectTrigger>
+                <SelectTrigger className="glossy-card">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -402,7 +403,7 @@ const FocusMode: React.FC = () => {
             
             {sessionType === 'work' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-visio-primary dark:text-visio-primary mb-2">
                   Duration (minutes)
                 </label>
                 <Input
@@ -415,30 +416,31 @@ const FocusMode: React.FC = () => {
                   }}
                   min="1"
                   max="60"
+                  className="glossy-card"
                 />
               </div>
             )}
-          </div>
+          </Card>
         )}
 
         {/* Progress Stats */}
         <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-          <div className="p-3 bg-white rounded-lg shadow">
-            <div className="text-lg font-bold text-green-600">{completedSessions}</div>
-            <div className="text-xs text-gray-500">Today</div>
-          </div>
-          <div className="p-3 bg-white rounded-lg shadow">
-            <div className="text-lg font-bold text-blue-600">
+          <Card className="p-3 glossy-card">
+            <div className="text-lg font-bold text-visio-primary dark:text-visio-primary">{completedSessions}</div>
+            <div className="text-xs text-visio-secondary dark:text-visio-secondary">Today</div>
+          </Card>
+          <Card className="p-3 glossy-card">
+            <div className="text-lg font-bold text-visio-primary dark:text-visio-primary">
               {Math.round((completedSessions * customDuration) / 60 * 10) / 10}h
             </div>
-            <div className="text-xs text-gray-500">Focus Time</div>
-          </div>
-          <div className="p-3 bg-white rounded-lg shadow">
-            <div className="text-lg font-bold text-purple-600">
+            <div className="text-xs text-visio-secondary dark:text-visio-secondary">Focus Time</div>
+          </Card>
+          <Card className="p-3 glossy-card">
+            <div className="text-lg font-bold text-visio-primary dark:text-visio-primary">
               {Math.floor(completedSessions / 4)}
             </div>
-            <div className="text-xs text-gray-500">Cycles</div>
-          </div>
+            <div className="text-xs text-visio-secondary dark:text-visio-secondary">Cycles</div>
+          </Card>
         </div>
       </div>
     </Card>

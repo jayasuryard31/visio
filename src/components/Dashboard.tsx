@@ -209,13 +209,13 @@ const Dashboard: React.FC = () => {
     <MobileLayout showAddGoal onAddGoal={() => setIsAddModalOpen(true)}>
       <div className="space-y-6">
         {/* Welcome Section */}
-        <div className="text-center py-8">
+        <Card className="text-center py-8 glossy-card">
           <div className="w-20 h-20 bg-visio-primary rounded-full flex items-center justify-center mx-auto mb-4 glossy-card">
             <Sparkles className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-visio-primary dark:text-visio-primary mb-2">Welcome to Visio</h1>
           <p className="text-visio-secondary dark:text-visio-secondary">Manifest your dreams into reality</p>
-        </div>
+        </Card>
 
         {/* Daily Reminder */}
         <DailyReminder />
@@ -277,50 +277,52 @@ const Dashboard: React.FC = () => {
         </Card>
 
         {/* Recent Goals */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-visio-primary dark:text-visio-primary">Recent Goals</h2>
-            <Button
-              onClick={() => navigate('/goals')}
-              variant="outline"
-              size="sm"
-              className="text-visio-primary border-visio-primary hover:bg-visio-surface-variant dark:text-visio-primary dark:border-visio-primary"
-            >
-              View All
-            </Button>
-          </div>
-          
-          {goals.length === 0 ? (
-            <Card className="p-8 text-center glossy-card border-dashed border-2 border-visio-primary">
-              <Sparkles className="w-12 h-12 text-visio-primary mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-visio-primary dark:text-visio-primary mb-2">
-                Start Your Journey
-              </h3>
-              <p className="text-visio-secondary dark:text-visio-secondary mb-4">
-                Create your first goal and begin manifesting your dreams into reality.
-              </p>
+        <Card className="glossy-card">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-visio-primary dark:text-visio-primary">Recent Goals</h2>
               <Button
-                onClick={() => setIsAddModalOpen(true)}
-                className="glossy-button"
+                onClick={() => navigate('/goals')}
+                variant="outline"
+                size="sm"
+                className="text-visio-primary border-visio-primary hover:bg-visio-surface-variant dark:text-visio-primary dark:border-visio-primary"
               >
-                <Plus className="w-4 h-4 mr-2" />
-                Create Your First Goal
+                View All
               </Button>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {goals.slice(0, 4).map((goal) => (
-                <GoalCard
-                  key={goal.id}
-                  goal={goal}
-                  onUpdate={handleUpdateGoal}
-                  onDelete={handleDeleteGoal}
-                  onEdit={handleEditGoal}
-                />
-              ))}
             </div>
-          )}
-        </div>
+            
+            {goals.length === 0 ? (
+              <div className="p-8 text-center border-dashed border-2 border-visio-primary rounded-lg">
+                <Sparkles className="w-12 h-12 text-visio-primary mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-visio-primary dark:text-visio-primary mb-2">
+                  Start Your Journey
+                </h3>
+                <p className="text-visio-secondary dark:text-visio-secondary mb-4">
+                  Create your first goal and begin manifesting your dreams into reality.
+                </p>
+                <Button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="glossy-button"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Your First Goal
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {goals.slice(0, 4).map((goal) => (
+                  <GoalCard
+                    key={goal.id}
+                    goal={goal}
+                    onUpdate={handleUpdateGoal}
+                    onDelete={handleDeleteGoal}
+                    onEdit={handleEditGoal}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </Card>
       </div>
 
       {/* Modals */}
