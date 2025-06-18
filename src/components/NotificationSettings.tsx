@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -225,17 +224,17 @@ const NotificationSettings: React.FC = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Push Notifications */}
-      <Card className="p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-          <Smartphone className="mr-2 text-blue-500" size={24} />
+      <Card className="p-6 glossy-card">
+        <h3 className="text-xl font-bold text-visio-primary dark:text-visio-primary mb-4 flex items-center">
+          <Smartphone className="mr-2 text-visio-primary" size={24} />
           Push Notifications
         </h3>
         
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-visio-surface-variant dark:bg-visio-surface-variant rounded-lg">
             <div>
-              <h4 className="font-medium">Browser Notifications</h4>
-              <p className="text-sm text-gray-500">
+              <h4 className="font-medium text-visio-primary dark:text-visio-primary">Browser Notifications</h4>
+              <p className="text-sm text-visio-secondary dark:text-visio-secondary">
                 Status: {pushSubscription ? 'Enabled' : pushPermission === 'denied' ? 'Blocked' : 'Disabled'}
               </p>
             </div>
@@ -245,6 +244,7 @@ const NotificationSettings: React.FC = () => {
                   onClick={enablePushNotifications}
                   disabled={!pushSupported}
                   size="sm"
+                  className="glossy-button"
                 >
                   Enable
                 </Button>
@@ -254,6 +254,7 @@ const NotificationSettings: React.FC = () => {
                   onClick={disablePushNotifications} 
                   size="sm" 
                   variant="outline"
+                  className="border-visio-primary text-visio-primary dark:border-visio-primary dark:text-visio-primary"
                 >
                   Disable
                 </Button>
@@ -269,17 +270,17 @@ const NotificationSettings: React.FC = () => {
       </Card>
 
       {/* Notification Preferences */}
-      <Card className="p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-          <Bell className="mr-2 text-orange-500" size={24} />
+      <Card className="p-6 glossy-card">
+        <h3 className="text-xl font-bold text-visio-primary dark:text-visio-primary mb-4 flex items-center">
+          <Bell className="mr-2 text-visio-primary" size={24} />
           Notification Types
         </h3>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="font-medium">Goal Reminders</h4>
-              <p className="text-sm text-gray-500">Daily reminders about your goals</p>
+              <h4 className="font-medium text-visio-primary dark:text-visio-primary">Goal Reminders</h4>
+              <p className="text-sm text-visio-secondary dark:text-visio-secondary">Daily reminders about your goals</p>
             </div>
             <Switch
               checked={preferences?.goalReminders ?? true}
@@ -289,8 +290,8 @@ const NotificationSettings: React.FC = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="font-medium">Daily Check-in Reminders</h4>
-              <p className="text-sm text-gray-500">Reminders to log your daily mood and reflection</p>
+              <h4 className="font-medium text-visio-primary dark:text-visio-primary">Daily Check-in Reminders</h4>
+              <p className="text-sm text-visio-secondary dark:text-visio-secondary">Reminders to log your daily mood and reflection</p>
             </div>
             <Switch
               checked={preferences?.dailyCheckinReminders ?? true}
@@ -300,20 +301,20 @@ const NotificationSettings: React.FC = () => {
 
           {preferences?.goalReminders && (
             <div className="ml-4 flex items-center space-x-2">
-              <Clock size={16} className="text-gray-400" />
+              <Clock size={16} className="text-visio-secondary dark:text-visio-secondary" />
               <Input
                 type="time"
                 value={preferences?.reminderTime ?? '09:00'}
                 onChange={(e) => updatePreferences({ reminderTime: e.target.value })}
-                className="w-32"
+                className="w-32 glossy-card"
               />
             </div>
           )}
 
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="font-medium">Focus Session Reminders</h4>
-              <p className="text-sm text-gray-500">Reminders to take breaks and start focus sessions</p>
+              <h4 className="font-medium text-visio-primary dark:text-visio-primary">Focus Session Reminders</h4>
+              <p className="text-sm text-visio-secondary dark:text-visio-secondary">Reminders to take breaks and start focus sessions</p>
             </div>
             <Switch
               checked={preferences?.focusSessionReminders ?? true}
@@ -323,8 +324,8 @@ const NotificationSettings: React.FC = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="font-medium">Streak Notifications</h4>
-              <p className="text-sm text-gray-500">Celebrate your goal streaks</p>
+              <h4 className="font-medium text-visio-primary dark:text-visio-primary">Streak Notifications</h4>
+              <p className="text-sm text-visio-secondary dark:text-visio-secondary">Celebrate your goal streaks</p>
             </div>
             <Switch
               checked={preferences?.streakNotifications ?? true}
@@ -334,8 +335,8 @@ const NotificationSettings: React.FC = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="font-medium">Milestone Notifications</h4>
-              <p className="text-sm text-gray-500">Get notified when you reach milestones</p>
+              <h4 className="font-medium text-visio-primary dark:text-visio-primary">Milestone Notifications</h4>
+              <p className="text-sm text-visio-secondary dark:text-visio-secondary">Get notified when you reach milestones</p>
             </div>
             <Switch
               checked={preferences?.milestoneNotifications ?? true}

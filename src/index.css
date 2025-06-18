@@ -31,8 +31,8 @@
   --visio-primary: 25 100% 55%; /* Main orange */
   --visio-surface: 0 0% 100%; /* White surface */
   --visio-surface-variant: 25 15% 96%; /* Light surface variant */
-  --visio-text-primary: 25 45% 20%; /* Dark text for light mode */
-  --visio-text-secondary: 25 100% 50%; /* Orange text for better visibility */
+  --visio-text-primary: 25 45% 15%; /* Dark text for light mode */
+  --visio-text-secondary: 25 30% 40%; /* Darker secondary text for light mode */
 }
 
 .dark {
@@ -59,10 +59,10 @@
 
   /* Dark mode uniform colors */
   --visio-primary: 25 100% 60%; /* Brighter orange for dark */
-  --visio-surface: 25 20% 10%; /* Dark surface */
-  --visio-surface-variant: 25 15% 15%; /* Dark surface variant */
-  --visio-text-primary: 45 100% 90%; /* Light text for dark mode */
-  --visio-text-secondary: 45 80% 75%; /* Secondary light text */
+  --visio-surface: 25 20% 12%; /* Dark surface */
+  --visio-surface-variant: 25 15% 18%; /* Dark surface variant */
+  --visio-text-primary: 45 100% 95%; /* Light text for dark mode */
+  --visio-text-secondary: 45 70% 80%; /* Light secondary text for dark mode */
 }
 
 @layer base {
@@ -106,7 +106,7 @@
   }
   
   .glossy-card {
-    @apply bg-visio-surface dark:bg-visio-surface backdrop-blur-sm border border-white/20 dark:border-gray-700/30;
+    @apply bg-visio-surface dark:bg-visio-surface backdrop-blur-sm border border-white/20 dark:border-gray-700/50;
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.25),
