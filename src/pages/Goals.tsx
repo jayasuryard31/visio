@@ -164,7 +164,7 @@ const Goals: React.FC = () => {
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading your goals...</p>
+            <p className="text-visio-secondary dark:text-visio-secondary">Loading your goals...</p>
           </div>
         </div>
       </MobileLayout>
@@ -175,22 +175,22 @@ const Goals: React.FC = () => {
     <MobileLayout showAddGoal onAddGoal={() => setIsAddModalOpen(true)}>
       <div className="space-y-6">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Your Manifestations</h1>
-          <p className="text-gray-600">Track your journey to success</p>
+          <h1 className="text-2xl font-bold text-visio-primary dark:text-visio-primary mb-2">Your Manifestations</h1>
+          <p className="text-visio-secondary dark:text-visio-secondary">Track your journey to success</p>
         </div>
 
         {goals.length === 0 ? (
-          <Card className="p-12 text-center bg-white/70 backdrop-blur-sm border-dashed border-2 border-orange-300">
-            <Sparkles className="w-16 h-16 text-orange-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <Card className="p-12 text-center glossy-card border-dashed border-2 border-visio-primary">
+            <Sparkles className="w-16 h-16 text-visio-primary mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-visio-primary dark:text-visio-primary mb-2">
               Start Your Journey
             </h3>
-            <p className="text-gray-500 mb-6">
+            <p className="text-visio-secondary dark:text-visio-secondary mb-6">
               Create your first goal and begin manifesting your dreams into reality.
             </p>
             <Button
               onClick={() => setIsAddModalOpen(true)}
-              className="bg-gradient-to-r from-orange-400 to-red-400 text-white border-0"
+              className="glossy-button"
             >
               <Plus className="w-4 h-4 mr-2" />
               Create Your First Goal

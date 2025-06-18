@@ -83,8 +83,11 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children, showAddGoal = fal
         })}
       </nav>
 
-      {/* Footer */}
+      {/* Footer with Version */}
       <div className="p-4 border-t border-visio-surface-variant dark:border-gray-700">
+        <div className="mb-3 text-center">
+          <p className="text-xs text-visio-secondary dark:text-visio-secondary">Version 1.0.0</p>
+        </div>
         <Button
           onClick={handleSignOut}
           variant="outline"
