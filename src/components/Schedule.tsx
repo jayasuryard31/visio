@@ -120,30 +120,26 @@ const Schedule: React.FC = () => {
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      work: 'bg-blue-100 text-blue-800',
-      personal: 'bg-green-100 text-green-800',
-      health: 'bg-red-100 text-red-800',
-      social: 'bg-purple-100 text-purple-800',
-      other: 'bg-gray-100 text-gray-800'
+      work: 'bg-visio-primary text-white',
+      personal: 'bg-visio-primary text-white',
+      health: 'bg-visio-primary text-white',
+      social: 'bg-visio-primary text-white',
+      other: 'bg-visio-primary text-white'
     };
     return colors[category as keyof typeof colors] || colors.other;
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-0 shadow-lg">
+    <Card className="p-6 glossy-card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold text-gray-800 flex items-center">
-          <Calendar className="mr-2 text-blue-500" size={24} />
+        <h3 className="text-xl font-bold text-visio-primary flex items-center">
+          <Calendar className="mr-2 text-visio-primary" size={24} />
           Schedule
         </h3>
         <Button
           onClick={() => setIsCreating(!isCreating)}
           size="sm"
-          style={{
-            background: 'linear-gradient(45deg, #3b82f6, #1d4ed8)',
-            color: 'white',
-            border: 'none'
-          }}
+          className="glossy-button"
         >
           <Plus size={16} className="mr-1" />
           New Event
@@ -152,29 +148,32 @@ const Schedule: React.FC = () => {
 
       {/* Create New Event */}
       {isCreating && (
-        <Card className="p-4 mb-4 bg-white">
+        <Card className="p-4 mb-4 glossy-card">
           <div className="space-y-3">
             <Input
               value={newEvent.title}
               onChange={(e) => setNewEvent({...newEvent, title: e.target.value})}
               placeholder="Event title..."
+              className="glossy-card"
             />
             <Textarea
               value={newEvent.description}
               onChange={(e) => setNewEvent({...newEvent, description: e.target.value})}
               placeholder="Description (optional)"
               rows={2}
+              className="glossy-card"
             />
             <div className="grid grid-cols-2 gap-2">
               <Input
                 type="date"
                 value={newEvent.date}
                 onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}
+                className="glossy-card"
               />
               <select
                 value={newEvent.category}
                 onChange={(e) => setNewEvent({...newEvent, category: e.target.value as any})}
-                className="px-3 py-2 border rounded-md"
+                className="px-3 py-2 border rounded-md bg-visio-surface text-visio-primary border-visio-surface-variant"
               >
                 <option value="personal">Personal</option>
                 <option value="work">Work</option>
@@ -189,29 +188,28 @@ const Schedule: React.FC = () => {
                 value={newEvent.startTime}
                 onChange={(e) => setNewEvent({...newEvent, startTime: e.target.value})}
                 placeholder="Start time"
+                className="glossy-card"
               />
               <Input
                 type="time"
                 value={newEvent.endTime}
                 onChange={(e) => setNewEvent({...newEvent, endTime: e.target.value})}
                 placeholder="End time"
+                className="glossy-card"
               />
             </div>
             <Input
               value={newEvent.location}
               onChange={(e) => setNewEvent({...newEvent, location: e.target.value})}
               placeholder="Location (optional)"
+              className="glossy-card"
             />
             <div className="flex space-x-2">
               <Button
                 onClick={handleCreateEvent}
                 disabled={loading || !newEvent.title.trim()}
                 size="sm"
-                style={{
-                  background: 'linear-gradient(45deg, #3b82f6, #1d4ed8)',
-                  color: 'white',
-                  border: 'none'
-                }}
+                className="glossy-button"
               >
                 {loading ? 'Creating...' : 'Create Event'}
               </Button>
@@ -219,6 +217,7 @@ const Schedule: React.FC = () => {
                 onClick={() => setIsCreating(false)}
                 variant="outline"
                 size="sm"
+                className="border-visio-primary text-visio-primary hover:bg-visio-surface-variant"
               >
                 Cancel
               </Button>
@@ -230,35 +229,35 @@ const Schedule: React.FC = () => {
       {/* Upcoming Events */}
       <div className="space-y-3 max-h-96 overflow-y-auto">
         {events.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-visio-secondary">
             <Calendar size={48} className="mx-auto mb-3 opacity-50" />
             <p>No upcoming events. Schedule your day!</p>
           </div>
         ) : (
           events.map((event) => (
-            <Card key={event.id} className="p-4 bg-white hover:shadow-md transition-shadow">
+            <Card key={event.id} className="p-4 glossy-card hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
-                  <h4 className="font-semibold text-gray-800">{event.title}</h4>
-                  <div className="flex items-center text-sm text-gray-500 mt-1">
+                  <h4 className="font-semibold text-visio-primary">{event.title}</h4>
+                  <div className="flex items-center text-sm text-visio-secondary mt-1">
                     <Clock size={14} className="mr-1" />
                     {event.startTime} - {event.endTime}
                   </div>
                   {event.location && (
-                    <div className="flex items-center text-sm text-gray-500 mt-1">
+                    <div className="flex items-center text-sm text-visio-secondary mt-1">
                       <MapPin size={14} className="mr-1" />
                       {event.location}
                     </div>
                   )}
                   {event.description && (
-                    <p className="text-sm text-gray-600 mt-2">{event.description}</p>
+                    <p className="text-sm text-visio-secondary mt-2">{event.description}</p>
                   )}
                 </div>
                 <div className="flex flex-col items-end space-y-1">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(event.category)}`}>
                     {event.category}
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-visio-secondary">
                     {new Date(event.date).toLocaleDateString()}
                   </span>
                 </div>
