@@ -52,34 +52,34 @@ const StreakTracker: React.FC = () => {
   }
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-red-50 to-orange-50 border-0 shadow-lg">
-      <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-        <Flame className="mr-2 text-red-500" size={24} />
+    <Card className="p-6 glossy-card">
+      <h3 className="text-xl font-bold text-visio-primary mb-4 flex items-center">
+        <Flame className="mr-2 text-visio-primary" size={24} />
         Streak Tracker
       </h3>
 
       <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="text-center p-4 bg-white rounded-xl shadow-sm">
-          <div className="text-2xl font-bold text-red-500">{totalStreak}</div>
-          <div className="text-sm text-gray-600">Total Days</div>
+        <div className="text-center p-4 bg-visio-surface-variant rounded-xl">
+          <div className="text-2xl font-bold text-visio-primary">{totalStreak}</div>
+          <div className="text-sm text-visio-secondary">Total Days</div>
         </div>
-        <div className="text-center p-4 bg-white rounded-xl shadow-sm">
-          <div className="text-2xl font-bold text-orange-500">{longestStreak}</div>
-          <div className="text-sm text-gray-600">Best Streak</div>
+        <div className="text-center p-4 bg-visio-surface-variant rounded-xl">
+          <div className="text-2xl font-bold text-visio-primary">{longestStreak}</div>
+          <div className="text-sm text-visio-secondary">Best Streak</div>
         </div>
       </div>
 
       <div className="space-y-3">
         {goals.slice(0, 3).map((goal) => (
-          <div key={goal.id} className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
+          <div key={goal.id} className="flex items-center justify-between p-3 bg-visio-surface-variant rounded-lg">
             <div className="flex-1">
-              <h4 className="font-medium text-gray-800 truncate">{goal.title}</h4>
-              <div className="flex items-center text-sm text-gray-500 mt-1">
+              <h4 className="font-medium text-visio-primary truncate">{goal.title}</h4>
+              <div className="flex items-center text-sm text-visio-secondary mt-1">
                 <Calendar size={14} className="mr-1" />
                 <span>{goal.streakCount || 0} days</span>
               </div>
             </div>
-            <div className="flex items-center text-red-500">
+            <div className="flex items-center text-visio-primary">
               <Flame size={20} />
               <span className="font-bold ml-1">{goal.streakCount || 0}</span>
             </div>
@@ -88,7 +88,7 @@ const StreakTracker: React.FC = () => {
       </div>
 
       {goals.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-visio-secondary">
           <Trophy size={48} className="mx-auto mb-3 opacity-50" />
           <p>Start working on your goals to build streaks!</p>
         </div>

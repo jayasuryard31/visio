@@ -53,7 +53,7 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onUpdate, onDelete, onEdit })
 
   return (
     <Card 
-      className={`p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer border-0 bg-white/70 backdrop-blur-sm ${
+      className={`p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer glossy-card ${
         goal.isCompleted ? 'opacity-75' : ''
       }`}
       onMouseEnter={() => setIsHovered(true)}
@@ -69,12 +69,12 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onUpdate, onDelete, onEdit })
             className="mr-3 p-0 h-auto hover:bg-transparent"
           >
             {goal.isCompleted ? (
-              <CheckCircle className="w-6 h-6 text-green-500" />
+              <CheckCircle className="w-6 h-6 text-visio-primary" />
             ) : (
-              <Circle className="w-6 h-6 text-gray-400 hover:text-green-500 transition-colors" />
+              <Circle className="w-6 h-6 text-visio-secondary hover:text-visio-primary transition-colors" />
             )}
           </Button>
-          <h3 className={`font-semibold text-lg ${goal.isCompleted ? 'line-through text-gray-500' : 'text-gray-900'}`}>
+          <h3 className={`font-semibold text-lg ${goal.isCompleted ? 'line-through text-visio-secondary' : 'text-visio-primary'}`}>
             {goal.title}
           </h3>
         </div>
@@ -82,15 +82,15 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onUpdate, onDelete, onEdit })
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <MoreVertical className="w-4 h-4" />
+              <MoreVertical className="w-4 h-4 text-visio-primary" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white border border-gray-200">
+          <DropdownMenuContent align="end" className="glossy-card">
             <DropdownMenuItem onClick={() => onEdit(goal)}>
               <Edit className="w-4 h-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onDelete(goal.id)} className="text-red-600">
+            <DropdownMenuItem onClick={() => onDelete(goal.id)} className="text-red-500">
               <Trash2 className="w-4 h-4 mr-2" />
               Delete
             </DropdownMenuItem>
@@ -104,25 +104,25 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onUpdate, onDelete, onEdit })
       </div>
 
       {/* Description */}
-      <p className="text-gray-600 mb-4 line-clamp-2">
+      <p className="text-visio-secondary mb-4 line-clamp-2">
         {goal.description}
       </p>
 
       {/* Target Outcome */}
-      <div className="flex items-center mb-4 p-3 bg-purple-50 rounded-lg">
-        <Target className="w-4 h-4 text-purple-600 mr-2 flex-shrink-0" />
-        <p className="text-sm text-purple-800 font-medium">
+      <div className="flex items-center mb-4 p-3 bg-visio-surface-variant rounded-lg">
+        <Target className="w-4 h-4 text-visio-primary mr-2 flex-shrink-0" />
+        <p className="text-sm text-visio-primary font-medium">
           {goal.targetOutcome}
         </p>
       </div>
 
       {/* Progress */}
       <div className="mb-4">
-        <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+        <div className="flex items-center justify-between text-sm text-visio-secondary mb-2">
           <span>Progress</span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-visio-surface-variant rounded-full h-2">
           <div
             className={`h-2 rounded-full transition-all duration-300 ${getProgressColor()}`}
             style={{ width: `${progress}%` }}
@@ -132,25 +132,25 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onUpdate, onDelete, onEdit })
 
       {/* Days Info */}
       <div className="flex items-center justify-between text-sm">
-        <div className="flex items-center text-gray-500">
+        <div className="flex items-center text-visio-secondary">
           <Calendar className="w-4 h-4 mr-1" />
           <span>{goal.targetDays} days total</span>
         </div>
         <div className="text-right">
           {goal.isCompleted ? (
-            <span className="text-green-600 font-medium">Completed! 🎉</span>
+            <span className="text-visio-primary font-medium">Completed! 🎉</span>
           ) : daysRemaining > 0 ? (
-            <span className="text-blue-600 font-medium">{daysRemaining} days left</span>
+            <span className="text-visio-primary font-medium">{daysRemaining} days left</span>
           ) : (
-            <span className="text-red-600 font-medium">Due today!</span>
+            <span className="text-red-500 font-medium">Due today!</span>
           )}
         </div>
       </div>
 
       {/* Notes (if any) */}
       {goal.notes && (
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <p className="text-xs text-gray-500 italic">
+        <div className="mt-4 pt-4 border-t border-visio-surface-variant">
+          <p className="text-xs text-visio-secondary italic">
             "{goal.notes}"
           </p>
         </div>

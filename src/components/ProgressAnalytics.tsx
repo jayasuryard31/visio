@@ -91,50 +91,50 @@ const ProgressAnalytics: React.FC = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Key Metrics */}
-      <Card className="p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-          <TrendingUp className="mr-2 text-blue-500" size={24} />
+      <Card className="p-6 glossy-card">
+        <h3 className="text-xl font-bold text-visio-primary mb-4 flex items-center">
+          <TrendingUp className="mr-2 text-visio-primary" size={24} />
           Key Metrics
         </h3>
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">{avgMood.toFixed(1)}</div>
-            <div className="text-sm text-gray-600">Avg Mood</div>
+          <div className="text-center p-4 bg-visio-surface-variant rounded-lg">
+            <div className="text-2xl font-bold text-visio-primary">{avgMood.toFixed(1)}</div>
+            <div className="text-sm text-visio-secondary">Avg Mood</div>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">{avgEnergy.toFixed(1)}</div>
-            <div className="text-sm text-gray-600">Avg Energy</div>
+          <div className="text-center p-4 bg-visio-surface-variant rounded-lg">
+            <div className="text-2xl font-bold text-visio-primary">{avgEnergy.toFixed(1)}</div>
+            <div className="text-sm text-visio-secondary">Avg Energy</div>
           </div>
-          <div className="text-center p-4 bg-orange-50 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600">{totalProgress.toFixed(0)}%</div>
-            <div className="text-sm text-gray-600">Avg Progress</div>
+          <div className="text-center p-4 bg-visio-surface-variant rounded-lg">
+            <div className="text-2xl font-bold text-visio-primary">{totalProgress.toFixed(0)}%</div>
+            <div className="text-sm text-visio-secondary">Avg Progress</div>
           </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">{checkIns.length}</div>
-            <div className="text-sm text-gray-600">Check-ins</div>
+          <div className="text-center p-4 bg-visio-surface-variant rounded-lg">
+            <div className="text-2xl font-bold text-visio-primary">{checkIns.length}</div>
+            <div className="text-sm text-visio-secondary">Check-ins</div>
           </div>
         </div>
       </Card>
 
       {/* Mood & Energy Trend */}
-      <Card className="p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">7-Day Mood & Energy</h3>
+      <Card className="p-6 glossy-card">
+        <h3 className="text-xl font-bold text-visio-primary mb-4">7-Day Mood & Energy</h3>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={moodData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis domain={[1, 5]} />
             <Tooltip />
-            <Line type="monotone" dataKey="mood" stroke="#ff6b35" strokeWidth={2} />
-            <Line type="monotone" dataKey="energy" stroke="#f7931e" strokeWidth={2} />
+            <Line type="monotone" dataKey="mood" stroke="hsl(var(--visio-primary))" strokeWidth={2} />
+            <Line type="monotone" dataKey="energy" stroke="hsl(var(--visio-primary))" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </Card>
 
       {/* Goal Categories */}
       {pieData.length > 0 && (
-        <Card className="p-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Goals by Category</h3>
+        <Card className="p-6 glossy-card">
+          <h3 className="text-xl font-bold text-visio-primary mb-4">Goals by Category</h3>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
@@ -142,7 +142,7 @@ const ProgressAnalytics: React.FC = () => {
                 cx="50%"
                 cy="50%"
                 outerRadius={80}
-                fill="#8884d8"
+                fill="hsl(var(--visio-primary))"
                 dataKey="value"
                 label={({ name, value }) => `${name}: ${value}`}
               >
@@ -157,25 +157,25 @@ const ProgressAnalytics: React.FC = () => {
       )}
 
       {/* Achievement Summary */}
-      <Card className="p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-          <Award className="mr-2 text-yellow-500" size={24} />
+      <Card className="p-6 glossy-card">
+        <h3 className="text-xl font-bold text-visio-primary mb-4 flex items-center">
+          <Award className="mr-2 text-visio-primary" size={24} />
           Achievements
         </h3>
         <div className="space-y-3">
-          <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
-            <span className="text-sm font-medium">Goals Completed</span>
-            <span className="text-lg font-bold text-yellow-600">
+          <div className="flex justify-between items-center p-3 bg-visio-surface-variant rounded-lg">
+            <span className="text-sm font-medium text-visio-primary">Goals Completed</span>
+            <span className="text-lg font-bold text-visio-primary">
               {goals.filter(g => g.isCompleted).length}
             </span>
           </div>
-          <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-            <span className="text-sm font-medium">Days Checked In</span>
-            <span className="text-lg font-bold text-green-600">{checkIns.length}</span>
+          <div className="flex justify-between items-center p-3 bg-visio-surface-variant rounded-lg">
+            <span className="text-sm font-medium text-visio-primary">Days Checked In</span>
+            <span className="text-lg font-bold text-visio-primary">{checkIns.length}</span>
           </div>
-          <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-            <span className="text-sm font-medium">Active Goals</span>
-            <span className="text-lg font-bold text-blue-600">
+          <div className="flex justify-between items-center p-3 bg-visio-surface-variant rounded-lg">
+            <span className="text-sm font-medium text-visio-primary">Active Goals</span>
+            <span className="text-lg font-bold text-visio-primary">
               {goals.filter(g => !g.isCompleted).length}
             </span>
           </div>

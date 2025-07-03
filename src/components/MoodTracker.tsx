@@ -106,16 +106,16 @@ const MoodTracker: React.FC = () => {
   const energyLabels = ['', 'Exhausted', 'Low', 'Moderate', 'High', 'Energized'];
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-0 shadow-lg">
-      <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-        <Heart className="mr-2 text-pink-500" size={24} />
+    <Card className="p-6 glossy-card">
+      <h3 className="text-xl font-bold text-visio-primary mb-4 flex items-center">
+        <Heart className="mr-2 text-visio-primary" size={24} />
         Daily Mood Check-in
       </h3>
       
       <div className="space-y-6">
         {/* Mood Rating */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-visio-primary mb-2">
             How are you feeling today?
           </label>
           <div className="flex space-x-2">
@@ -125,8 +125,8 @@ const MoodTracker: React.FC = () => {
                 onClick={() => setMoodRating(rating)}
                 className={`p-3 rounded-lg text-2xl transition-all ${
                   moodRating === rating
-                    ? 'bg-pink-200 scale-110'
-                    : 'bg-white hover:bg-pink-100'
+                    ? 'bg-visio-primary text-white scale-110'
+                    : 'bg-visio-surface-variant hover:bg-visio-primary hover:text-white'
                 }`}
               >
                 {moodIcons[rating]}
@@ -137,7 +137,7 @@ const MoodTracker: React.FC = () => {
 
         {/* Energy Level */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-visio-primary mb-2">
             What's your energy level?
           </label>
           <div className="flex space-x-2">
@@ -147,13 +147,13 @@ const MoodTracker: React.FC = () => {
                   onClick={() => setEnergyLevel(level)}
                   className={`p-3 rounded-lg transition-all ${
                     energyLevel === level
-                      ? 'bg-yellow-200 scale-110'
-                      : 'bg-white hover:bg-yellow-100'
+                      ? 'bg-visio-primary text-white scale-110'
+                      : 'bg-visio-surface-variant hover:bg-visio-primary hover:text-white'
                   }`}
                 >
                   {energyIcons[level]}
                 </button>
-                <span className="text-xs text-gray-500 mt-1">{energyLabels[level]}</span>
+                <span className="text-xs text-visio-secondary mt-1">{energyLabels[level]}</span>
               </div>
             ))}
           </div>
@@ -161,28 +161,28 @@ const MoodTracker: React.FC = () => {
 
         {/* Gratitude Note */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-visio-primary mb-2">
             What are you grateful for today?
           </label>
           <Textarea
             value={gratitudeNote}
             onChange={(e) => setGratitudeNote(e.target.value)}
             placeholder="I'm grateful for..."
-            className="resize-none"
+            className="resize-none glossy-card"
             rows={2}
           />
         </div>
 
         {/* Daily Reflection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-visio-primary mb-2">
             Daily Reflection
           </label>
           <Textarea
             value={dailyReflection}
             onChange={(e) => setDailyReflection(e.target.value)}
             placeholder="How was your day? What did you learn?"
-            className="resize-none"
+            className="resize-none glossy-card"
             rows={3}
           />
         </div>
@@ -190,12 +190,7 @@ const MoodTracker: React.FC = () => {
         <Button
           onClick={handleSaveCheckIn}
           disabled={loading}
-          className="w-full"
-          style={{
-            background: 'linear-gradient(45deg, #ff6b35, #f7931e)',
-            color: 'white',
-            border: 'none'
-          }}
+          className="w-full glossy-button"
         >
           {loading ? 'Saving...' : todayCheckIn ? 'Update Check-in' : 'Save Check-in'}
         </Button>

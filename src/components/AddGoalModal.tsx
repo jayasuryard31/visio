@@ -60,10 +60,10 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl bg-white/95 backdrop-blur-xl border-0 shadow-2xl">
+      <DialogContent className="max-w-2xl glossy-card">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent flex items-center">
-            <Sparkles className="w-6 h-6 text-purple-600 mr-2" />
+          <DialogTitle className="text-2xl font-bold text-visio-primary flex items-center">
+            <Sparkles className="w-6 h-6 text-visio-primary mr-2" />
             Create New Manifestation
           </DialogTitle>
         </DialogHeader>
@@ -71,8 +71,8 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Goal Title */}
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-sm font-medium text-gray-700 flex items-center">
-              <Target className="w-4 h-4 mr-2 text-purple-600" />
+            <Label htmlFor="title" className="text-sm font-medium text-visio-primary flex items-center">
+              <Target className="w-4 h-4 mr-2 text-visio-primary" />
               Goal Title
             </Label>
             <Input
@@ -81,15 +81,15 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
               placeholder="e.g., Learn Spanish fluently"
               value={formData.title}
               onChange={(e) => handleChange('title', e.target.value)}
-              className="border-purple-200 focus:border-purple-500 focus:ring-purple-500/20"
+              className="glossy-card"
               required
             />
           </div>
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-sm font-medium text-gray-700 flex items-center">
-              <FileText className="w-4 h-4 mr-2 text-purple-600" />
+            <Label htmlFor="description" className="text-sm font-medium text-visio-primary flex items-center">
+              <FileText className="w-4 h-4 mr-2 text-visio-primary" />
               Description
             </Label>
             <Textarea
@@ -97,7 +97,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
               placeholder="Describe your goal and why it's important to you..."
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
-              className="border-purple-200 focus:border-purple-500 focus:ring-purple-500/20 h-24"
+              className="glossy-card h-24"
               required
             />
           </div>
@@ -105,8 +105,8 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
           {/* Target Days and Outcome in a grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="targetDays" className="text-sm font-medium text-gray-700 flex items-center">
-                <Calendar className="w-4 h-4 mr-2 text-purple-600" />
+              <Label htmlFor="targetDays" className="text-sm font-medium text-visio-primary flex items-center">
+                <Calendar className="w-4 h-4 mr-2 text-visio-primary" />
                 Target Days
               </Label>
               <Input
@@ -117,14 +117,14 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
                 max="365"
                 value={formData.targetDays}
                 onChange={(e) => handleChange('targetDays', e.target.value)}
-                className="border-purple-200 focus:border-purple-500 focus:ring-purple-500/20"
+                className="glossy-card"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="targetOutcome" className="text-sm font-medium text-gray-700 flex items-center">
-                <Sparkles className="w-4 h-4 mr-2 text-purple-600" />
+              <Label htmlFor="targetOutcome" className="text-sm font-medium text-visio-primary flex items-center">
+                <Sparkles className="w-4 h-4 mr-2 text-visio-primary" />
                 Target Outcome
               </Label>
               <Input
@@ -133,7 +133,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
                 placeholder="Have a 10-minute conversation"
                 value={formData.targetOutcome}
                 onChange={(e) => handleChange('targetOutcome', e.target.value)}
-                className="border-purple-200 focus:border-purple-500 focus:ring-purple-500/20"
+                className="glossy-card"
                 required
               />
             </div>
@@ -141,7 +141,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
 
           {/* Notes */}
           <div className="space-y-2">
-            <Label htmlFor="notes" className="text-sm font-medium text-gray-700">
+            <Label htmlFor="notes" className="text-sm font-medium text-visio-primary">
               Additional Notes (Optional)
             </Label>
             <Textarea
@@ -149,7 +149,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
               placeholder="Any additional thoughts, motivations, or reminders..."
               value={formData.notes}
               onChange={(e) => handleChange('notes', e.target.value)}
-              className="border-purple-200 focus:border-purple-500 focus:ring-purple-500/20 h-20"
+              className="glossy-card h-20"
             />
           </div>
 
@@ -159,13 +159,13 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onAdd }) =
               type="button"
               variant="outline"
               onClick={onClose}
-              className="border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="border-visio-primary text-visio-primary hover:bg-visio-surface-variant"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+              className="glossy-button"
             >
               <Sparkles className="w-4 h-4 mr-2" />
               Create Goal
