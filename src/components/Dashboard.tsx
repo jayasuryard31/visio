@@ -210,11 +210,11 @@ const Dashboard: React.FC = () => {
       <div className="space-y-6">
         {/* Welcome Section */}
         <Card className="text-center py-8 glossy-card">
-          <div className="w-20 h-20 bg-visio-primary rounded-full flex items-center justify-center mx-auto mb-4 glossy-card">
+          <div className="w-20 h-20 bg-visio-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <Sparkles className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-visio-primary dark:text-visio-primary mb-2">Welcome to Visio</h1>
-          <p className="text-visio-secondary dark:text-visio-secondary">Manifest your dreams into reality</p>
+          <h1 className="text-3xl font-bold text-visio-primary mb-2">Welcome to Visio</h1>
+          <p className="text-visio-secondary">Manifest your dreams into reality</p>
         </Card>
 
         {/* Daily Reminder */}
@@ -222,46 +222,46 @@ const Dashboard: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-4 bg-visio-primary text-white border-0 glossy-card">
+          <Card className="p-4 bg-visio-primary text-white border-0">
             <div className="text-center">
-              <Target className="w-8 h-8 mx-auto mb-2 opacity-90" />
+              <Target className="w-8 h-8 mx-auto mb-2" />
               <div className="text-2xl font-bold">{goals.filter(g => !g.isCompleted).length}</div>
-              <div className="text-xs opacity-90">Active Goals</div>
+              <div className="text-xs">Active Goals</div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-visio-primary text-white border-0 glossy-card">
+          <Card className="p-4 bg-visio-primary text-white border-0">
             <div className="text-center">
-              <Lightbulb className="w-8 h-8 mx-auto mb-2 opacity-90" />
+              <Lightbulb className="w-8 h-8 mx-auto mb-2" />
               <div className="text-2xl font-bold">{goals.filter(g => g.isCompleted).length}</div>
-              <div className="text-xs opacity-90">Completed</div>
+              <div className="text-xs">Completed</div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-visio-primary text-white border-0 glossy-card">
+          <Card className="p-4 bg-visio-primary text-white border-0">
             <div className="text-center">
-              <Calendar className="w-8 h-8 mx-auto mb-2 opacity-90" />
+              <Calendar className="w-8 h-8 mx-auto mb-2" />
               <div className="text-2xl font-bold">
                 {goals.reduce((sum, goal) => sum + (goal.targetDays || 0), 0)}
               </div>
-              <div className="text-xs opacity-90">Total Days</div>
+              <div className="text-xs">Total Days</div>
             </div>
           </Card>
 
-          <Card className="p-4 bg-visio-primary text-white border-0 glossy-card">
+          <Card className="p-4 bg-visio-primary text-white border-0">
             <div className="text-center">
-              <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-90" />
+              <BarChart3 className="w-8 h-8 mx-auto mb-2" />
               <div className="text-2xl font-bold">
                 {goals.length > 0 ? Math.round(goals.reduce((sum, goal) => sum + (goal.progressPercentage || 0), 0) / goals.length) : 0}%
               </div>
-              <div className="text-xs opacity-90">Avg Progress</div>
+              <div className="text-xs">Avg Progress</div>
             </div>
           </Card>
         </div>
 
         {/* Quick Actions */}
         <Card className="p-6 glossy-card">
-          <h3 className="text-lg font-bold text-visio-primary dark:text-visio-primary mb-4">Quick Actions</h3>
+          <h3 className="text-lg font-bold text-visio-primary mb-4">Quick Actions</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {quickActions.map((action, index) => (
               <button
@@ -280,12 +280,12 @@ const Dashboard: React.FC = () => {
         <Card className="glossy-card">
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-visio-primary dark:text-visio-primary">Recent Goals</h2>
+              <h2 className="text-xl font-bold text-visio-primary">Recent Goals</h2>
               <Button
                 onClick={() => navigate('/goals')}
                 variant="outline"
                 size="sm"
-                className="text-visio-primary border-visio-primary hover:bg-visio-surface-variant dark:text-visio-primary dark:border-visio-primary"
+                className="text-visio-primary border-visio-primary hover:bg-visio-surface-variant"
               >
                 View All
               </Button>
@@ -294,10 +294,10 @@ const Dashboard: React.FC = () => {
             {goals.length === 0 ? (
               <div className="p-8 text-center border-dashed border-2 border-visio-primary rounded-lg">
                 <Sparkles className="w-12 h-12 text-visio-primary mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-visio-primary dark:text-visio-primary mb-2">
+                <h3 className="text-lg font-semibold text-visio-primary mb-2">
                   Start Your Journey
                 </h3>
-                <p className="text-visio-secondary dark:text-visio-secondary mb-4">
+                <p className="text-visio-secondary mb-4">
                   Create your first goal and begin manifesting your dreams into reality.
                 </p>
                 <Button
